@@ -1,0 +1,114 @@
+===============================================================================
+                     BEVERA-360 / ROBO BARTENDER
+                     ESP32 HARDWARE PIN CONNECTIONS
+===============================================================================
+
+-------------------------------------------------------------------------------
+1. ESP32 GPIO PIN ASSIGNMENT TABLE
+-------------------------------------------------------------------------------
+
+COMPONENT             PIN NAME       ESP32 GPIO      LOGIC / TYPE     NOTES
+-------------------------------------------------------------------------------
+Relay 1 (Pump 1)      IN 1           GPIO 23         Digital OUT      Active LOW (Tank 1)
+Relay 2 (Pump 2)      IN 2           GPIO 25         Digital OUT      Active LOW (Tank 2)
+Relay 3 (Pump 3)      IN 3           GPIO 19         Digital OUT      Active LOW (Tank 3)
+Relay 4 (Pump 4)      IN 4           GPIO 18         Digital OUT      Active LOW (Tank 4)
+Relay 5 (Pump 5)      IN 5           GPIO 5          Digital OUT      Active LOW (Tank 5)
+Relay 6 (Stirrer)     IN 6           GPIO 14         Digital OUT      Active LOW (12V Motor)
+
+IR Cup Sensor         OUT / DO       GPIO 4          Digital IN       Active LOW (LOW = Cup present)
+
+16x2 I2C LCD          SDA            GPIO 21         I2C Data         Address: 0x27 (or 0x3F)
+16x2 I2C LCD          SCL            GPIO 22         I2C Clock        Shared I2C Bus
+
+Power Supply (Logic)  VIN / 5V       Buck 5V OUT     5V Power Input   Regulated 5V
+Power Supply (Logic)  GND            Common GND      Ground           Common Negative Ground
+
+
+-------------------------------------------------------------------------------
+2. POWER DISTRIBUTION SCHEMATIC (DUAL VOLTAGE)
+-------------------------------------------------------------------------------
+
+230V AC Grid Power
+   │
+   ▼
+[ 12V 10A DC PSU ]
+   │
+   ├───────► 12V DC Main Positive Bus (+)
+   │            │
+   │            ├──────► Relay Module COM Terminals (COM 1 to COM 6)
+   │            │
+   │            └──────► (Do NOT connect 12V directly to ESP32!)
+   │
+   ├───────► 12V DC Main Negative Bus (-) / GND
+   │            │
+   │            ├──────► Pump 1 to 5 Negative (-) Terminals
+   │            ├──────► Stirrer Motor Negative (-) Terminal
+   │            └──────► Buck Converter 12V GND IN
+   │
+   ▼
+[ 12V to 5V DC Buck Step-Down Converter ]
+   │
+   ├───────► Regulated 5V DC Positive Bus (+)
+   │            │
+   │            ├──────► ESP32 VIN / 5V Pin
+   │            ├──────► 5-Channel Relay Module VCC
+   │            ├──────► 16x2 I2C LCD VCC Pin
+   │            └──────► IR Cup Sensor VCC Pin
+   │
+   └───────► Common Ground (GND) Bus (-)
+                │
+                ├──────► ESP32 GND Pin
+                ├──────► Relay Module GND Pin
+                ├──────► 16x2 I2C LCD GND Pin
+                └──────► IR Cup Sensor GND Pin
+
+
+-------------------------------------------------------------------------------
+3. RELAY MODULE TERMINAL CONNECTIONS (12V HIGH POWER)
+-------------------------------------------------------------------------------
+
+RELAY CHANNEL        CONTROL PIN (ESP32)     COM TERMINAL          NO TERMINAL
+-------------------------------------------------------------------------------
+Relay 1 (Pump 1)     GPIO 23                 12V DC (+)            Pump 1 Positive (+)
+Relay 2 (Pump 2)     GPIO 25                 12V DC (+)            Pump 2 Positive (+)
+Relay 3 (Pump 3)     GPIO 19                 12V DC (+)            Pump 3 Positive (+)
+Relay 4 (Pump 4)     GPIO 18                 12V DC (+)            Pump 4 Positive (+)
+Relay 5 (Pump 5)     GPIO 5                  12V DC (+)            Pump 5 Positive (+)
+Relay 6 (Stirrer)    GPIO 4                 12V DC (+)            Motor Positive (+)
+
+* Note: Normally Open (NO) terminals connect to component positive inputs. 
+  When the relay triggers (Active LOW), the switch closes and completes 12V circuit.
+
+
+-------------------------------------------------------------------------------
+4. SENSOR & DISPLAY DETAILED WIRING
+-------------------------------------------------------------------------------
+
+A. 16x2 I2C LCD Display (PCF8574 Backpack)
+   - GND  -->  ESP32 GND / Common GND
+   - VCC  -->  5V Output (Buck Converter)
+   - SDA  -->  ESP32 GPIO 21
+   - SCL  -->  ESP32 GPIO 22
+
+B. IR Cup Proximity Sensor
+   - GND  -->  ESP32 GND / Common GND
+   - VCC  -->  5V Output (Buck Converter)
+   - OUT  -->  ESP32 GPIO 4 (Internal Pull-Up Enabled)
+
+
+-------------------------------------------------------------------------------
+5. SAFETY & TROUBLESHOOTING NOTES
+-------------------------------------------------------------------------------
+
+1. Active LOW Logic: Relay channels trigger ON when GPIO pin is set to LOW (0V).
+   If your relay module is Active HIGH, change `#define RELAY_ACTIVE_LOW false`
+   in `Config.h`.
+
+2. Ground Sharing: The 12V PSU negative terminal and the 5V Buck converter 
+   ground MUST be tied to the same Common Ground bus.
+
+3. Flyback Diode: Most 12V relay modules include optocouplers and flyback diodes.
+   If using custom MOSFETs or individual relays, place a 1N4007 diode across
+   pump motor terminals to eliminate inductive kickback voltages.
+===============================================================================
