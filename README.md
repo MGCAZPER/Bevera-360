@@ -42,7 +42,7 @@ Bevera-360/
 │       ├── Bevera360_ESP32.ino    # ESP32 Main Loop & State Machine
 │       ├── Config.h               # Pin Allocations & Network Configuration
 │       ├── Hardware.h             # Relay, LCD, IR Sensor & EEPROM Drivers
-│       └── WebServer.h            # HTTP REST API Server
+│       └── BeveraWebServer.h      # HTTP REST API Server
 ├── docs/
 │   ├── WIRING_DIAGRAM.md          # Comprehensive Wiring & Pinout Guide
 │   └── SETUP_GUIDE.md             # Assembly, Flashing & Calibration Guide

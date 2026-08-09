@@ -3,7 +3,7 @@ import { useBartender } from '../context/BartenderContext';
 import { Cpu, Power, Monitor, ShieldCheck, ShieldAlert, RotateCw, Droplet, CheckCircle2 } from 'lucide-react';
 
 export const ManualDiagnostics = () => {
-  const { tanks, triggerManualTest, cupPresent, setCupPresent, emergencyStop } = useBartender();
+  const { tanks, triggerManualTest, cupDetected, setCupDetected, emergencyStop } = useBartender();
   
   const [relayStates, setRelayStates] = useState({
     pump_1: false,
@@ -149,21 +149,21 @@ export const ManualDiagnostics = () => {
 
             <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {cupPresent ? (
+                {cupDetected ? (
                   <ShieldCheck size={28} className="text-emerald-400" />
                 ) : (
                   <ShieldAlert size={28} className="text-rose-400 animate-bounce" />
                 )}
                 <div>
                   <h4 className="font-bold text-white text-sm">
-                    {cupPresent ? 'CUP PRESENT (LOW)' : 'NO CUP DETECTED (HIGH)'}
+                    {cupDetected ? 'CUP PRESENT (LOW)' : 'NO CUP DETECTED (HIGH)'}
                   </h4>
                   <p className="text-xs text-slate-400">GPIO 4 Interlock Digital Input</p>
                 </div>
               </div>
 
               <button
-                onClick={() => setCupPresent(!cupPresent)}
+                onClick={() => setCupDetected(!cupDetected)}
                 className="btn btn-secondary text-xs"
               >
                 Toggle State

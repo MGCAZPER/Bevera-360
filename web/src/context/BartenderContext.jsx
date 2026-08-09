@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 
 const BartenderContext = createContext();
@@ -6,285 +6,379 @@ const BartenderContext = createContext();
 export const DEFAULT_PRESET_DRINKS = [
   {
     id: 'drink_ocean_blue',
+    numBadge: 1,
     name: 'Ocean Blue',
-    priceLkr: 450,
+    priceLkr: 350,
+    prepTime: '2-3 min',
     category: 'Signature Cocktail',
-    description: 'A perfect blend of blue curaçao, lemonade and mint. Refreshing and cool!',
+    ingredientsSummary: 'Blue Curaçao, Lemon, Soda, Mint',
     image: '/images/ocean_blue.png',
-    icon: '🌊',
-    ingredients: [
-      { name: 'Blue Curaçao', ml: 30, color: '#00f0ff', pumpIdx: 1 },
-      { name: 'Lemonade', ml: 60, color: '#ffea00', pumpIdx: 2 },
-      { name: 'Mint Syrup', ml: 20, color: '#00ff88', pumpIdx: 4 },
-      { name: 'Soda Water', ml: 40, color: '#ffffff', pumpIdx: 3 }
+    ingredientsDetailed: [
+      { name: 'Blue Curaçao', amount: '60ml' },
+      { name: 'Lemon Juice', amount: '30ml' },
+      { name: 'Soda Water', amount: '20ml' },
+      { name: 'Mint Leaves', amount: '5ml' }
     ],
-    volumesMl: [30, 60, 40, 20, 0], // Pump 1-5 mapping
+    volumesMl: [60, 30, 20, 5, 0],
     stirrerSec: 4,
     popular: true
   },
   {
-    id: 'drink_sunset_bliss',
-    name: 'Sunset Bliss',
-    priceLkr: 450,
-    category: 'Layered Punch',
-    description: 'Vibrant orange juice and grenade syrup layered over sparkling soda.',
-    image: '/images/sunset_bliss.png',
-    icon: '🌅',
-    ingredients: [
-      { name: 'Sunset Syrup', ml: 30, color: '#ff9900', pumpIdx: 0 },
-      { name: 'Orange Juice', ml: 60, color: '#ff5500', pumpIdx: 2 },
-      { name: 'Lemonade', ml: 40, color: '#ffea00', pumpIdx: 1 },
-      { name: 'Soda Water', ml: 20, color: '#ffffff', pumpIdx: 3 }
+    id: 'drink_mint_mojito',
+    numBadge: 2,
+    name: 'Mint Mojito',
+    priceLkr: 320,
+    prepTime: '2-3 min',
+    category: 'Refreshing Cooler',
+    ingredientsSummary: 'Mint, Lime, Soda, Sugar, White Rum',
+    image: '/images/mint_mojito.png',
+    ingredientsDetailed: [
+      { name: 'Mint Syrup', amount: '30ml' },
+      { name: 'Lime Juice', amount: '30ml' },
+      { name: 'Soda Water', amount: '50ml' },
+      { name: 'Sugar Syrup', amount: '15ml' }
     ],
-    volumesMl: [30, 40, 60, 20, 0],
+    volumesMl: [30, 30, 50, 15, 0],
     stirrerSec: 3,
     popular: true
   },
   {
-    id: 'drink_minty_fresh',
-    name: 'Minty Fresh',
-    priceLkr: 450,
-    category: 'Refreshing Cooler',
-    description: 'Zesty fresh lime and crushed mint blended with fizzy soda.',
-    image: '/images/minty_fresh.png',
-    icon: '🍃',
-    ingredients: [
-      { name: 'Mint Syrup', ml: 40, color: '#00ff88', pumpIdx: 4 },
-      { name: 'Lime Juice', ml: 30, color: '#a3e635', pumpIdx: 4 },
-      { name: 'Soda Water', ml: 60, color: '#ffffff', pumpIdx: 3 },
-      { name: 'Sugar Syrup', ml: 20, color: '#fef08a', pumpIdx: 1 }
+    id: 'drink_berry_crush',
+    numBadge: 3,
+    name: 'Berry Crush',
+    priceLkr: 360,
+    prepTime: '2-3 min',
+    category: 'Berry Fusion',
+    ingredientsSummary: 'Strawberry, Cranberry, Lime, Soda',
+    image: '/images/berry_crush.png',
+    ingredientsDetailed: [
+      { name: 'Strawberry Extract', amount: '40ml' },
+      { name: 'Cranberry Juice', amount: '50ml' },
+      { name: 'Lime Juice', amount: '20ml' },
+      { name: 'Soda Water', amount: '40ml' }
     ],
-    volumesMl: [0, 20, 0, 60, 70],
+    volumesMl: [40, 50, 20, 40, 0],
     stirrerSec: 4,
     popular: true
   },
   {
-    id: 'drink_tropical_punch',
-    name: 'Tropical Punch',
-    priceLkr: 450,
-    category: 'Exotic Fruit Blend',
-    description: 'Sweet pineapple juice mixed with coconut water and citrus burst.',
-    image: '/images/tropical_punch.png',
-    icon: '🍍',
-    ingredients: [
-      { name: 'Pineapple Juice', ml: 50, color: '#facc15', pumpIdx: 2 },
-      { name: 'Orange Juice', ml: 40, color: '#ff5500', pumpIdx: 2 },
-      { name: 'Coconut Water', ml: 30, color: '#f8fafc', pumpIdx: 0 },
-      { name: 'Grenadine', ml: 30, color: '#ff007a', pumpIdx: 3 }
+    id: 'drink_sunset_delight',
+    numBadge: 4,
+    name: 'Sunset Delight',
+    priceLkr: 340,
+    prepTime: '2-3 min',
+    category: 'Layered Punch',
+    ingredientsSummary: 'Orange, Pineapple, Grenadine',
+    image: '/images/sunset_delight.png',
+    ingredientsDetailed: [
+      { name: 'Orange Juice', amount: '60ml' },
+      { name: 'Pineapple Juice', amount: '50ml' },
+      { name: 'Grenadine Syrup', amount: '30ml' },
+      { name: 'Soda Water', amount: '20ml' }
     ],
-    volumesMl: [30, 0, 90, 30, 0],
+    volumesMl: [60, 50, 30, 20, 0],
     stirrerSec: 5,
-    popular: false
+    popular: true
   },
   {
-    id: 'drink_berry_delight',
-    name: 'Berry Delight',
-    priceLkr: 450,
-    category: 'Berry Fusion',
-    description: 'Rich dark berry syrup and wild cranberry over crushed ice.',
-    image: '/images/berry_delight.png',
-    icon: '🫐',
-    ingredients: [
-      { name: 'Berry Syrup', ml: 40, color: '#ff007a', pumpIdx: 3 },
-      { name: 'Cranberry Juice', ml: 50, color: '#e11d48', pumpIdx: 3 },
-      { name: 'Lime Juice', ml: 30, color: '#a3e635', pumpIdx: 4 },
-      { name: 'Soda Water', ml: 30, color: '#ffffff', pumpIdx: 2 }
+    id: 'drink_chocolate_bliss',
+    numBadge: 5,
+    name: 'Chocolate Bliss',
+    priceLkr: 380,
+    prepTime: '2-3 min',
+    category: 'Dessert Blend',
+    ingredientsSummary: 'Chocolate, Milk, Hazelnut, Cream',
+    image: '/images/chocolate_bliss.png',
+    ingredientsDetailed: [
+      { name: 'Chocolate Milk', amount: '70ml' },
+      { name: 'Hazelnut Syrup', amount: '20ml' },
+      { name: 'Sweet Cream', amount: '30ml' },
+      { name: 'Espresso Shot', amount: '30ml' }
     ],
-    volumesMl: [0, 0, 30, 90, 30],
-    stirrerSec: 4,
-    popular: false
+    volumesMl: [70, 20, 30, 30, 0],
+    stirrerSec: 5,
+    popular: true
   }
 ];
 
 export const DEFAULT_TANKS = [
-  { id: 1, name: 'Tank 1: Coconut / Blue Curaçao', color: '#00f0ff', capacityMl: 1000, currentMl: 850 },
-  { id: 2, name: 'Tank 2: Lemonade / Citrus', color: '#ffea00', capacityMl: 1000, currentMl: 720 },
-  { id: 3, name: 'Tank 3: Orange / Pineapple', color: '#ff5500', capacityMl: 1000, currentMl: 900 },
-  { id: 4, name: 'Tank 4: Grenadine / Soda', color: '#ff007a', capacityMl: 1000, currentMl: 640 },
-  { id: 5, name: 'Tank 5: Mint / Lime Juice', color: '#00ff88', capacityMl: 1000, currentMl: 950 }
+  { id: 1, name: 'T1', label: 'Tank 1: Green Nectar', pct: 80, currentMl: 800, capacityMl: 1000, color: '#00ff88' },
+  { id: 2, name: 'T2', label: 'Tank 2: Cyan Curaçao', pct: 65, currentMl: 650, capacityMl: 1000, color: '#00f0ff' },
+  { id: 3, name: 'T3', label: 'Tank 3: Red Grenadine', pct: 90, currentMl: 900, capacityMl: 1000, color: '#ff2a5f' },
+  { id: 4, name: 'T4', label: 'Tank 4: Orange Juice', pct: 50, currentMl: 500, capacityMl: 1000, color: '#ffaa00' },
+  { id: 5, name: 'T5', label: 'Tank 5: Purple Berry', pct: 75, currentMl: 750, capacityMl: 1000, color: '#a855f7' }
+];
+
+export const INITIAL_RECENT_ORDERS = [
+  { id: '#1024', drink: 'Ocean Blue', time: '10:30 AM', status: 'Completed' },
+  { id: '#1023', drink: 'Mint Mojito', time: '10:15 AM', status: 'Completed' },
+  { id: '#1022', drink: 'Berry Crush', time: '10:02 AM', status: 'Completed' },
+  { id: '#1021', drink: 'Sunset Delight', time: '09:45 AM', status: 'Completed' },
+  { id: '#1020', drink: 'Chocolate Bliss', time: '09:30 AM', status: 'Completed' }
 ];
 
 export const BartenderProvider = ({ children }) => {
-  const [drinks, setDrinks] = useState(DEFAULT_PRESET_DRINKS);
+  const [drinks] = useState(DEFAULT_PRESET_DRINKS);
   const [tanks, setTanks] = useState(DEFAULT_TANKS);
-  const [flowRates, setFlowRates] = useState([15.0, 15.0, 15.0, 15.0, 15.0]); // ml/sec
+  const [flowRates, setFlowRates] = useState([15.0, 15.0, 15.0, 15.0, 15.0]);
   
-  const [selectedDrinkDetail, setSelectedDrinkDetail] = useState(DEFAULT_PRESET_DRINKS[0]); // Default Ocean Blue
-  const [cart, setCart] = useState([
-    { ...DEFAULT_PRESET_DRINKS[0], quantity: 1 },
-    { ...DEFAULT_PRESET_DRINKS[3], quantity: 1 }
+  // Selected Drink & Customizations
+  const [selectedDrink, setSelectedDrink] = useState(DEFAULT_PRESET_DRINKS[0]);
+  const [iceLevelVal, setIceLevelVal] = useState(60);
+  const [sweetnessVal, setSweetnessVal] = useState(80);
+  const [cupSize, setCupSize] = useState('Medium');
+  const [selectedExtras, setSelectedExtras] = useState([]);
+  
+  // Hardware & Connectivity Mode
+  const [esp32Ip, setEsp32Ip] = useState('192.168.4.1');
+  const [hardwareMode, setHardwareMode] = useState('LIVE_ESP32');
+  const [esp32Connected, setEsp32Connected] = useState(true);
+  
+  // IR Cup Proximity Sensor Interlock State
+  const [cupDetected, setCupDetected] = useState(true); // true = IR detects cup (LOW output), false = no cup (HIGH output)
+  const [wifiSignal, setWifiSignal] = useState('Strong');
+  const [systemStatus, setSystemStatus] = useState('Ready');
+
+  // Navigation View State ('main', 'preparation', 'completion', 'admin', 'calibration', 'figma_board')
+  const [activeScreen, setActiveScreen] = useState('main');
+  const [mobileTab, setMobileTab] = useState('home');
+
+  const [pumpsState, setPumpsState] = useState([
+    { id: 1, name: 'PUMP 1', status: 'OFF' },
+    { id: 2, name: 'PUMP 2', status: 'OFF' },
+    { id: 3, name: 'PUMP 3', status: 'OFF' },
+    { id: 4, name: 'PUMP 4', status: 'OFF' },
+    { id: 5, name: 'PUMP 5', status: 'OFF' }
+  ]);
+  const [stirrerMotor, setStirrerMotor] = useState('OFF');
+  const [dispensingStatus, setDispensingStatus] = useState('IDLE');
+
+  // Machine State Machine: IDLE, WAITING_FOR_CUP, PREPARING, PAUSED_NO_CUP, COMPLETED
+  const [machineState, setMachineState] = useState('IDLE');
+  const [prepProgress, setPrepProgress] = useState(0);
+  const [prepStep, setPrepStep] = useState(0); // 0: Order Received, 1: Cup Detected, 2: Measuring, 3: Mixing, 4: Dispensing, 5: Ready
+  const [timeRemaining, setTimeRemaining] = useState('00:45');
+
+  // Stats
+  const [totalOrdersToday, setTotalOrdersToday] = useState(24);
+  const [drinksSoldToday, setDrinksSoldToday] = useState(48);
+  const [machineTemp, setMachineTemp] = useState(32);
+  const [waterLevel, setWaterLevel] = useState(65);
+  const [totalRevenueLkr, setTotalRevenueLkr] = useState(12840);
+  const [recentOrders, setRecentOrders] = useState(INITIAL_RECENT_ORDERS);
+
+  const [pumpRuntimes] = useState([
+    { id: 1, name: 'Pump 1', time: '2h 15m' },
+    { id: 2, name: 'Pump 2', time: '1h 45m' },
+    { id: 3, name: 'Pump 3', time: '2h 30m' },
+    { id: 4, name: 'Pump 4', time: '1h 20m' },
+    { id: 5, name: 'Pump 5', time: '1h 50m' }
   ]);
 
-  const [esp32Ip, setEsp32Ip] = useState('192.168.4.1');
-  const [hardwareMode, setHardwareMode] = useState('SIMULATION_DEMO');
-  const [isConnected, setIsConnected] = useState(true);
-
-  // Machine Telemetry & Timeline tracking
-  const [machineState, setMachineState] = useState('IDLE'); // IDLE, WAITING_FOR_CUP, POURING, MIXING, COMPLETED, PAUSED_NO_CUP, ERROR
-  const [cupPresent, setCupPresent] = useState(true);
-  const [activePump, setActivePump] = useState(null);
-  const [dispenseProgress, setDispenseProgress] = useState(0); // 0 - 100%
-  const [currentDrinkName, setCurrentDrinkName] = useState('Ocean Blue');
-  const [currentOrderId, setCurrentOrderId] = useState('#RB20240056');
-  const [currentOrderTime, setCurrentOrderTime] = useState('02:15 PM');
-  
-  // Timeline Step Index (0: Received, 1: Preparing, 2: Mixing, 3: Dispensing, 4: Ready)
-  const [currentTimelineStep, setCurrentTimelineStep] = useState(1);
-
-  // Order Queue
-  const [orderQueue, setOrderQueue] = useState([]);
-  const [activeOrder, setActiveOrder] = useState(null);
-
-  // Cart Functions
-  const addToCart = (drink, qty = 1) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.id === drink.id);
-      if (existing) {
-        return prev.map(item => item.id === drink.id ? { ...item, quantity: item.quantity + qty } : item);
-      } else {
-        return [...prev, { ...drink, quantity: qty }];
-      }
+  // Toggle Extras
+  const toggleExtra = (extraItem) => {
+    setSelectedExtras(prev => {
+      const exists = prev.some(e => e.name === extraItem.name);
+      return exists ? prev.filter(e => e.name !== extraItem.name) : [...prev, extraItem];
     });
   };
 
-  const removeFromCart = (drinkId) => {
-    setCart(prev => prev.filter(item => item.id !== drinkId));
+  const calculateTotalPrice = (basePrice = selectedDrink.priceLkr) => {
+    const extrasTotal = selectedExtras.reduce((sum, e) => sum + e.priceLkr, 0);
+    return basePrice + extrasTotal;
   };
 
-  const updateCartQuantity = (drinkId, delta) => {
-    setCart(prev => prev.map(item => {
-      if (item.id === drinkId) {
-        const newQty = item.quantity + delta;
-        return newQty > 0 ? { ...item, quantity: newQty } : item;
+  // Real-Time ESP32 Polling Effect
+  useEffect(() => {
+    if (hardwareMode !== 'LIVE_ESP32') return;
+
+    const fetchESP32Status = async () => {
+      try {
+        const res = await fetch(`http://${esp32Ip}/api/status`, { signal: AbortSignal.timeout(2000) });
+        if (res.ok) {
+          const data = await res.json();
+          setEsp32Connected(true);
+          
+          // Real IR Cup Sensor state from ESP32 GPIO 4
+          if (data.cup_present !== undefined) {
+            setCupDetected(Boolean(data.cup_present));
+          }
+
+          if (data.state) {
+            if (data.state === 'IDLE') {
+              if (machineState !== 'PREPARING' && machineState !== 'WAITING_FOR_CUP') {
+                setMachineState('IDLE');
+                setPumpsState(prev => prev.map(p => ({ ...p, status: 'OFF' })));
+                setStirrerMotor('OFF');
+                setDispensingStatus('IDLE');
+              }
+            } else if (data.state === 'WAITING_FOR_CUP') {
+              setMachineState('WAITING_FOR_CUP');
+              setPumpsState(prev => prev.map(p => ({ ...p, status: 'OFF' })));
+            } else if (data.state === 'POURING' || data.state === 'MIXING') {
+              setMachineState('PREPARING');
+              if (data.state === 'MIXING') {
+                setStirrerMotor('ON');
+              } else if (data.state === 'POURING') {
+                setDispensingStatus('DISPENSING');
+              }
+            } else if (data.state === 'PAUSED_NO_CUP') {
+              setMachineState('PAUSED_NO_CUP');
+              setPumpsState(prev => prev.map(p => ({ ...p, status: 'OFF' })));
+              setStirrerMotor('OFF');
+            } else if (data.state === 'COMPLETED') {
+              setMachineState('COMPLETED');
+            }
+          }
+
+          if (data.flow_rates_ml_sec) {
+            const rates = [
+              data.flow_rates_ml_sec.pump_1 || 15.0,
+              data.flow_rates_ml_sec.pump_2 || 15.0,
+              data.flow_rates_ml_sec.pump_3 || 15.0,
+              data.flow_rates_ml_sec.pump_4 || 15.0,
+              data.flow_rates_ml_sec.pump_5 || 15.0
+            ];
+            setFlowRates(rates);
+          }
+        }
+      } catch (err) {
+        setEsp32Connected(false);
       }
-      return item;
-    }));
-  };
-
-  const clearCart = () => {
-    setCart([]);
-  };
-
-  // Process Checkout
-  const checkoutCart = () => {
-    if (cart.length === 0) return;
-    
-    // Pick first item or mix total for dispensing
-    const itemToPour = cart[0];
-    placeOrder(itemToPour);
-    clearCart();
-  };
-
-  // Place Order
-  const placeOrder = async (drinkRecipe, customerName = 'Guest User') => {
-    const orderNum = Math.floor(100000 + Math.random() * 900000);
-    const newOrderId = `#RB${orderNum}`;
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    setCurrentOrderId(newOrderId);
-    setCurrentDrinkName(drinkRecipe.name);
-    setCurrentOrderTime(timeStr);
-
-    const newOrder = {
-      id: newOrderId,
-      drinkName: drinkRecipe.name,
-      volumesMl: [...drinkRecipe.volumesMl],
-      stirrerSec: drinkRecipe.stirrerSec || 3,
-      customerName,
-      timestamp: timeStr,
-      status: 'PREPARING'
     };
 
-    setOrderQueue(prev => [...prev, newOrder]);
-    startOrderProcessing(newOrder);
+    fetchESP32Status();
+    const interval = setInterval(fetchESP32Status, 1500);
+    return () => clearInterval(interval);
+  }, [esp32Ip, hardwareMode, machineState]);
 
-    // Send HTTP POST to ESP32 if Live Mode
+  // IR Cup Interlock & Non-Blocking State Machine Simulation
+  useEffect(() => {
+    // Safety Cutoff Check: If cup is removed mid-pour or mid-mix
+    if (!cupDetected && machineState === 'PREPARING') {
+      setMachineState('PAUSED_NO_CUP');
+      setPumpsState(prev => prev.map(p => ({ ...p, status: 'OFF' })));
+      setStirrerMotor('OFF');
+      setDispensingStatus('PAUSED');
+    }
+
+    // Auto Resume when cup is replaced under IR sensor
+    if (cupDetected && (machineState === 'PAUSED_NO_CUP' || machineState === 'WAITING_FOR_CUP')) {
+      setMachineState('PREPARING');
+      setPrepStep(1); // Cup Detected ✓
+    }
+  }, [cupDetected, machineState]);
+
+  // Dispensing Simulation Timer Loop (runs only when cupDetected === true and machineState === 'PREPARING')
+  useEffect(() => {
+    if (machineState !== 'PREPARING' || !cupDetected) return;
+
+    const timer = setInterval(() => {
+      setPrepProgress(prev => {
+        const nextPct = prev + 4;
+        
+        // Update Step & Actuator Status
+        if (nextPct <= 15) {
+          setPrepStep(0); // Order Received
+        } else if (nextPct > 15 && nextPct <= 35) {
+          setPrepStep(1); // Cup Detected ✓
+        } else if (nextPct > 35 && nextPct <= 65) {
+          setPrepStep(2); // Measuring Ingredients
+          setPumpsState(pumps => pumps.map((p, idx) => idx === 0 ? { ...p, status: 'ON' } : p));
+          setDispensingStatus('DISPENSING');
+        } else if (nextPct > 65 && nextPct <= 85) {
+          setPrepStep(3); // Mixing
+          setPumpsState(pumps => pumps.map(p => ({ ...p, status: 'OFF' })));
+          setStirrerMotor('ON');
+          setDispensingStatus('MIXING');
+        } else if (nextPct > 85 && nextPct < 100) {
+          setPrepStep(4); // Dispensing Final
+          setStirrerMotor('OFF');
+          setDispensingStatus('DISPENSING');
+        } else if (nextPct >= 100) {
+          clearInterval(timer);
+          setPumpsState(pumps => pumps.map(p => ({ ...p, status: 'OFF' })));
+          setStirrerMotor('OFF');
+          setDispensingStatus('IDLE');
+          setPrepStep(5); // Drink Ready
+          setMachineState('COMPLETED');
+          setActiveScreen('completion');
+
+          try {
+            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+          } catch (e) {}
+
+          setTotalOrdersToday(prev => prev + 1);
+          setDrinksSoldToday(prev => prev + 1);
+          const finalPrice = calculateTotalPrice(selectedDrink.priceLkr);
+          setTotalRevenueLkr(prev => prev + finalPrice);
+
+          const newOrder = {
+            id: `#${Math.floor(1025 + Math.random() * 100)}`,
+            drink: selectedDrink.name,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            status: 'Completed'
+          };
+          setRecentOrders(prev => [newOrder, ...prev.slice(0, 4)]);
+          return 100;
+        }
+
+        return nextPct;
+      });
+    }, 200);
+
+    return () => clearInterval(timer);
+  }, [machineState, cupDetected, selectedDrink]);
+
+  // Place Order Action
+  const handlePlaceOrder = async (drink = selectedDrink) => {
+    setSelectedDrink(drink);
+    setActiveScreen('preparation');
+    setPrepProgress(0);
+    setTimeRemaining('00:45');
+
+    // Send HTTP POST to ESP32 API Endpoint if Live Mode
     if (hardwareMode === 'LIVE_ESP32') {
       try {
         await fetch(`http://${esp32Ip}/api/order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            drink_name: drinkRecipe.name,
-            volumes_ml: drinkRecipe.volumesMl,
-            stirrer_sec: drinkRecipe.stirrerSec || 3
+            drink_name: drink.name,
+            volumes_ml: drink.volumesMl,
+            stirrer_sec: drink.stirrerSec || 3
           })
         });
       } catch (err) {
-        console.error('Failed to send order to ESP32:', err);
+        console.warn('ESP32 HTTP order request failed:', err);
       }
     }
-  };
 
-  const startOrderProcessing = (order) => {
-    setActiveOrder(order);
-    setMachineState('WAITING_FOR_CUP');
-    setCurrentTimelineStep(0); // Order Received
-  };
-
-  // Simulation Runner for Timeline & Hardware States
-  useEffect(() => {
-    if (hardwareMode !== 'SIMULATION_DEMO' || !activeOrder) return;
-
-    if (machineState === 'WAITING_FOR_CUP') {
-      if (!cupPresent) return;
-
-      setMachineState('POURING');
-      setCurrentTimelineStep(1); // Preparing
-
-      let progress = 0;
-      let stepCount = 0;
-      const totalSteps = 40;
-
-      const timer = setInterval(() => {
-        stepCount++;
-        progress = Math.min(100, Math.round((stepCount / totalSteps) * 100));
-        setDispenseProgress(progress);
-
-        if (progress > 25 && progress < 70) {
-          setCurrentTimelineStep(2); // Mixing
-          setActivePump(2);
-        } else if (progress >= 70 && progress < 100) {
-          setCurrentTimelineStep(3); // Dispensing
-          setActivePump(3);
-        }
-
-        if (stepCount >= totalSteps) {
-          clearInterval(timer);
-          setActivePump(null);
-          setMachineState('MIXING');
-
-          setTimeout(() => {
-            setMachineState('COMPLETED');
-            setCurrentTimelineStep(4); // Ready!
-            setDispenseProgress(100);
-
-            // Confetti
-            try {
-              confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-            } catch (e) {}
-
-            setTimeout(() => {
-              setOrderQueue(prev => prev.map(o => o.id === activeOrder.id ? { ...o, status: 'COMPLETED' } : o));
-              setActiveOrder(null);
-              setMachineState('IDLE');
-              setDispenseProgress(0);
-            }, 5000);
-
-          }, (activeOrder.stirrerSec || 3) * 1000);
-        }
-      }, 100);
-
-      return () => clearInterval(timer);
+    // Check IR Cup Proximity Interlock First!
+    if (!cupDetected) {
+      setMachineState('WAITING_FOR_CUP');
+      setPrepStep(0); // Waiting for cup insertion
+    } else {
+      setMachineState('PREPARING');
+      setPrepStep(1); // Cup Detected ✓
     }
-  }, [machineState, activeOrder, cupPresent, hardwareMode]);
+  };
+
+  const handleResetOrder = () => {
+    setMachineState('IDLE');
+    setPrepProgress(0);
+    setPrepStep(0);
+    setActiveScreen('main');
+  };
 
   const emergencyStop = async () => {
     setMachineState('IDLE');
-    setActiveOrder(null);
-    setActivePump(null);
-    setDispenseProgress(0);
-    setCurrentTimelineStep(0);
+    setPumpsState(prev => prev.map(p => ({ ...p, status: 'OFF' })));
+    setStirrerMotor('OFF');
+    setDispensingStatus('IDLE');
+    setPrepProgress(0);
+    setPrepStep(0);
+    setActiveScreen('main');
 
     if (hardwareMode === 'LIVE_ESP32') {
       try {
@@ -328,35 +422,52 @@ export const BartenderProvider = ({ children }) => {
     <BartenderContext.Provider value={{
       drinks,
       tanks,
+      setTanks,
       flowRates,
-      selectedDrinkDetail,
-      setSelectedDrinkDetail,
-      cart,
-      addToCart,
-      removeFromCart,
-      updateCartQuantity,
-      clearCart,
-      checkoutCart,
+      updatePumpCalibration,
+      triggerManualTest,
+      selectedDrink,
+      setSelectedDrink,
+      iceLevelVal,
+      setIceLevelVal,
+      sweetnessVal,
+      setSweetnessVal,
+      cupSize,
+      setCupSize,
+      selectedExtras,
+      toggleExtra,
+      calculateTotalPrice,
       esp32Ip,
       setEsp32Ip,
       hardwareMode,
       setHardwareMode,
-      isConnected,
+      esp32Connected,
+      setEsp32Connected,
+      cupDetected,
+      setCupDetected,
+      wifiSignal,
+      systemStatus,
+      pumpsState,
+      stirrerMotor,
+      dispensingStatus,
       machineState,
-      cupPresent,
-      setCupPresent,
-      activePump,
-      dispenseProgress,
-      currentDrinkName,
-      currentOrderId,
-      currentOrderTime,
-      currentTimelineStep,
-      orderQueue,
-      activeOrder,
-      placeOrder,
-      emergencyStop,
-      updatePumpCalibration,
-      triggerManualTest
+      prepProgress,
+      prepStep,
+      timeRemaining,
+      activeScreen,
+      setActiveScreen,
+      mobileTab,
+      setMobileTab,
+      totalOrdersToday,
+      drinksSoldToday,
+      machineTemp,
+      waterLevel,
+      totalRevenueLkr,
+      recentOrders,
+      pumpRuntimes,
+      handlePlaceOrder,
+      handleResetOrder,
+      emergencyStop
     }}>
       {children}
     </BartenderContext.Provider>

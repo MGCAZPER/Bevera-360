@@ -7,7 +7,7 @@
 #include <Arduino.h>
 #include "Config.h"
 #include "Hardware.h"
-#include "WebServer.h"
+#include "BeveraWebServer.h"
 
 // Global System Variables
 HardwareController hardware;

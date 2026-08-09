@@ -8,7 +8,7 @@ export const DispenseStatusModal = () => {
     cupPresent, 
     activePump, 
     dispenseProgress, 
-    currentDispensingDrink, 
+    currentDrinkName, 
     activeOrder,
     emergencyStop 
   } = useBartender();
@@ -26,7 +26,7 @@ export const DispenseStatusModal = () => {
               Robotic Dispense Sequence
             </span>
             <h3 className="text-2xl font-black text-white">
-              {currentDispensingDrink || 'Dispensing Beverage'}
+              {currentDrinkName || 'Dispensing Beverage'}
             </h3>
           </div>
           <button
