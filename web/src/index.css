@@ -1,27 +1,81 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
 
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   BEVERA 360 — MODERN DESIGN SYSTEM
+   Light / Dark Theme
+   ========================================================= */
 
 :root {
-    --cream: #f4f1e8;
-    --paper: #faf9f4;
-    --black: #111111;
-    --black-soft: #1b1b1b;
-    --yellow: #f5c400;
-    --yellow-soft: #ffe477;
-    --red: #e6392f;
-    --green: #159447;
-    --muted: #77756e;
-    --line: #d9d5ca;
+    --bg: #f5f4ef;
+    --bg-secondary: #ffffff;
+    --surface: rgba(255, 255, 255, 0.78);
+    --surface-solid: #ffffff;
+    --surface-soft: #eeece5;
 
-    --font-heading: "Space Grotesk", sans-serif;
+    --text: #111111;
+    --text-secondary: #5f5f5b;
+    --text-muted: #96958f;
+
+    --border: rgba(17, 17, 17, 0.09);
+    --border-strong: rgba(17, 17, 17, 0.16);
+
+    --black: #111111;
+    --yellow: #ffd400;
+    --yellow-dark: #e5b900;
+    --red: #ff3b30;
+    --green: #19a974;
+
+    --shadow-sm: 0 4px 18px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 12px 35px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.12);
+
+    --radius-sm: 12px;
+    --radius-md: 18px;
+    --radius-lg: 26px;
+    --radius-xl: 32px;
+
     --font-body: "DM Sans", sans-serif;
-    --font-mono: "JetBrains Mono", monospace;
+    --font-heading: "Manrope", sans-serif;
+
+    color-scheme: light;
 }
 
+.dark {
+    --bg: #0c0c0b;
+    --bg-secondary: #111110;
+    --surface: rgba(24, 24, 22, 0.82);
+    --surface-solid: #171715;
+    --surface-soft: #20201d;
+
+    --text: #f7f7f2;
+    --text-secondary: #b7b7af;
+    --text-muted: #777770;
+
+    --border: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.16);
+
+    --black: #ffffff;
+    --yellow: #ffd400;
+    --yellow-dark: #e5b900;
+    --red: #ff5148;
+    --green: #35d895;
+
+    --shadow-sm: 0 4px 18px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 12px 35px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.5);
+
+    color-scheme: dark;
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
@@ -29,74 +83,45 @@ html {
     scroll-behavior: smooth;
 }
 
-body {
-    min-width: 320px;
-    min-height: 100vh;
+html,
+body,
+#root {
+    min-height: 100%;
+}
 
+body {
+    margin: 0;
+    min-width: 320px;
     background:
             radial-gradient(
-                    circle at 80% 5%,
-                    rgba(245, 196, 0, 0.14),
-                    transparent 25%
+                    circle at 80% 0%,
+                    rgba(255, 212, 0, 0.08),
+                    transparent 30%
             ),
-            var(--cream);
-
-    color: var(--black);
-
+            var(--bg);
+    color: var(--text);
     font-family: var(--font-body);
-
     overflow-x: hidden;
+    transition:
+            background-color 0.35s ease,
+            color 0.35s ease;
 }
 
 button,
 input,
-select,
-textarea {
-    font-family: inherit;
+textarea,
+select {
+    font: inherit;
 }
 
 button {
-    cursor: pointer;
+    border: 0;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: var(--font-heading);
+img {
+    max-width: 100%;
+    display: block;
 }
-
-code,
-.font-mono {
-    font-family: var(--font-mono);
-}
-
-/* =========================================================
-   SCROLLBAR
-========================================================= */
-
-::-webkit-scrollbar {
-    width: 7px;
-}
-
-::-webkit-scrollbar-track {
-    background: #e7e3d9;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #222;
-    border-radius: 20px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--yellow);
-}
-
-/* =========================================================
-   SELECTION
-========================================================= */
 
 ::selection {
     background: var(--yellow);
@@ -104,436 +129,437 @@ code,
 }
 
 /* =========================================================
-   MODERN CARD SYSTEM
-========================================================= */
+   TYPOGRAPHY
+   ========================================================= */
 
-.modern-card {
-    background: rgba(250, 249, 244, 0.82);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-family: var(--font-heading);
+    color: var(--text);
+}
 
-    border: 1px solid rgba(17, 17, 17, 0.12);
+p {
+    margin: 0;
+}
 
-    border-radius: 24px;
+.font-heading {
+    font-family: var(--font-heading);
+}
 
-    box-shadow:
-            0 8px 30px rgba(17, 17, 17, 0.06),
-            0 2px 8px rgba(17, 17, 17, 0.04);
+.font-body {
+    font-family: var(--font-body);
+}
 
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
 
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #b9b8b0;
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--yellow-dark);
+}
+
+/* =========================================================
+   MAIN APP
+   ========================================================= */
+
+.app-shell {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    transition:
+            background 0.35s ease,
+            color 0.35s ease;
+}
+
+/* =========================================================
+   GLASS
+   ========================================================= */
+
+.glass-panel {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
     transition:
             transform 0.25s ease,
             box-shadow 0.25s ease,
-            border-color 0.25s ease;
+            border-color 0.25s ease,
+            background 0.35s ease;
+}
+
+.glass-panel:hover {
+    border-color: var(--border-strong);
+}
+
+.glass-card {
+    background: var(--surface-solid);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border-color 0.25s ease,
+            background 0.35s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================================================
+   MODERN CARD
+   ========================================================= */
+
+.modern-card {
+    background: var(--surface-solid);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.25s ease;
 }
 
 .modern-card:hover {
-    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
 
-    border-color: rgba(17, 17, 17, 0.2);
-
-    box-shadow:
-            0 18px 45px rgba(17, 17, 17, 0.1);
+.dark .modern-card {
+    background: #151514;
 }
 
 /* =========================================================
-   BLACK CARD
-========================================================= */
+   NAVIGATION
+   ========================================================= */
 
-.black-card {
-    background: #111111;
-    color: white;
-
-    border-radius: 24px;
-
-    box-shadow:
-            0 18px 45px rgba(0, 0, 0, 0.18);
+.modern-nav {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
 }
 
-/* =========================================================
-   YELLOW CARD
-========================================================= */
-
-.yellow-card {
-    background: var(--yellow);
-    color: #111111;
-
-    border-radius: 24px;
-
-    box-shadow:
-            0 15px 40px rgba(245, 196, 0, 0.2);
-}
-
-/* =========================================================
-   RED CARD
-========================================================= */
-
-.red-card {
-    background: var(--red);
-    color: white;
-
-    border-radius: 24px;
-
-    box-shadow:
-            0 15px 40px rgba(230, 57, 47, 0.18);
-}
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-
-.btn-modern-black {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 9px;
-
-    padding: 12px 20px;
-
-    background: #111111;
-    color: white;
-
-    border: 1px solid #111111;
-
-    border-radius: 999px;
-
-    font-family: var(--font-heading);
-
-    font-size: 12px;
-
-    font-weight: 700;
-
+.nav-pill {
+    border-radius: 14px;
     transition: all 0.2s ease;
 }
 
-.btn-modern-black:hover {
-    background: #2a2a2a;
-
-    transform: translateY(-2px);
-
-    box-shadow:
-            0 8px 20px rgba(0, 0, 0, 0.18);
+.nav-pill:hover {
+    background: var(--surface-soft);
 }
 
-.btn-modern-yellow {
-    display: inline-flex;
+.nav-pill.active {
+    background: #111111;
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
 
-    align-items: center;
-    justify-content: center;
-
-    gap: 9px;
-
-    padding: 12px 20px;
-
-    background: var(--yellow);
-
+.dark .nav-pill.active {
+    background: #ffffff;
     color: #111111;
-
-    border: 1px solid var(--yellow);
-
-    border-radius: 999px;
-
-    font-family: var(--font-heading);
-
-    font-size: 12px;
-
-    font-weight: 800;
-
-    transition: all 0.2s ease;
 }
 
-.btn-modern-yellow:hover {
-    background: #ffd21a;
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
 
-    transform: translateY(-2px);
-
-    box-shadow:
-            0 8px 22px rgba(245, 196, 0, 0.25);
-}
-
-.btn-modern-red {
+.btn-primary {
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 8px;
 
-    padding: 11px 18px;
+    min-height: 44px;
+    padding: 0 20px;
 
-    background: var(--red);
+    border-radius: 14px;
 
-    color: white;
-
-    border: 1px solid var(--red);
-
-    border-radius: 999px;
+    background: var(--black);
+    color: var(--bg);
 
     font-family: var(--font-heading);
-
-    font-size: 11px;
-
+    font-size: 13px;
     font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* =========================================================
+   YELLOW BUTTON
+   ========================================================= */
+
+.btn-yellow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 44px;
+    padding: 0 20px;
+
+    border-radius: 14px;
+
+    background: var(--yellow);
+    color: #111111;
+
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow: 0 8px 25px rgba(255, 212, 0, 0.18);
 
     transition: all 0.2s ease;
 }
 
-.btn-modern-red:hover {
-    background: #c92f27;
-
+.btn-yellow:hover {
+    background: #ffe047;
     transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255, 212, 0, 0.25);
+}
+
+.btn-yellow:active {
+    transform: translateY(0);
+}
+
+/* =========================================================
+   RED BUTTON
+   ========================================================= */
+
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 42px;
+    padding: 0 18px;
+
+    border-radius: 14px;
+
+    background: var(--red);
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 59, 48, 0.2);
+}
+
+/* =========================================================
+   LEGACY CLASS SUPPORT
+   Keeps existing components working
+   ========================================================= */
+
+.btn-neon-cyan {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: var(--yellow);
+    color: #111111;
+
+    font-family: var(--font-heading);
+    font-weight: 800;
+
+    border: none;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.btn-neon-cyan:hover {
+    background: #ffe047;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255, 212, 0, 0.25);
+}
+
+.btn-neon-outline {
+    background: var(--surface-solid);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-neon-outline:hover {
+    background: var(--surface-soft);
+    border-color: var(--text);
+}
+
+.btn-danger-neon {
+    background: var(--red);
+    color: white;
+    border: none;
+}
+
+.btn-danger-neon:hover {
+    box-shadow: 0 10px 25px rgba(255, 59, 48, 0.2);
+}
+
+/* =========================================================
+   GRADIENT TEXT
+   ========================================================= */
+
+.text-gradient-cyan,
+.text-gradient-green,
+.text-gradient-gold {
+    background: linear-gradient(
+            120deg,
+            #111111 0%,
+            #111111 60%,
+            #e5b900 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dark .text-gradient-cyan,
+.dark .text-gradient-green,
+.dark .text-gradient-gold {
+    background: linear-gradient(
+            120deg,
+            #ffffff 0%,
+            #ffffff 60%,
+            #ffd400 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* =========================================================
    BADGES
-========================================================= */
+   ========================================================= */
 
-.badge-black {
+.badge-neon-green {
     display: inline-flex;
-
     align-items: center;
-
     gap: 6px;
 
-    padding: 6px 10px;
+    background: rgba(25, 169, 116, 0.1);
+    color: var(--green);
+
+    border: 1px solid rgba(25, 169, 116, 0.2);
 
     border-radius: 999px;
-
-    background: #111;
-
-    color: white;
-
-    font-family: var(--font-mono);
-
-    font-size: 8px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.08em;
-
-    text-transform: uppercase;
-}
-
-.badge-yellow {
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 6px;
-
     padding: 6px 10px;
 
-    border-radius: 999px;
-
-    background: var(--yellow);
-
-    color: #111;
-
-    font-family: var(--font-mono);
-
-    font-size: 8px;
-
+    font-size: 10px;
     font-weight: 800;
-
-    letter-spacing: 0.08em;
-
-    text-transform: uppercase;
 }
 
-.badge-red {
+.badge-neon-cyan {
     display: inline-flex;
-
     align-items: center;
-
     gap: 6px;
 
-    padding: 6px 10px;
+    background: rgba(255, 212, 0, 0.12);
+    color: #a98400;
+
+    border: 1px solid rgba(255, 212, 0, 0.3);
 
     border-radius: 999px;
+    padding: 6px 10px;
 
-    background: var(--red);
-
-    color: white;
-
-    font-family: var(--font-mono);
-
-    font-size: 8px;
-
+    font-size: 10px;
     font-weight: 800;
+}
 
-    letter-spacing: 0.08em;
+.badge-neon-magenta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 
-    text-transform: uppercase;
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--red);
+
+    border: 1px solid rgba(255, 59, 48, 0.2);
+
+    border-radius: 999px;
+    padding: 6px 10px;
+
+    font-size: 10px;
+    font-weight: 800;
 }
 
 /* =========================================================
-   TYPOGRAPHY
-========================================================= */
+   INPUTS
+   ========================================================= */
 
-.heading-xl {
-    font-family: var(--font-heading);
-
-    font-size: clamp(
-            2.8rem,
-            6vw,
-            7rem
-    );
-
-    line-height: 0.9;
-
-    letter-spacing: -0.07em;
-
-    font-weight: 700;
+input,
+textarea,
+select {
+    color: var(--text);
 }
 
-.heading-lg {
-    font-family: var(--font-heading);
-
-    font-size: clamp(
-            2rem,
-            4vw,
-            4.5rem
-    );
-
-    line-height: 0.95;
-
-    letter-spacing: -0.05em;
-
-    font-weight: 700;
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
 }
-
-.heading-md {
-    font-family: var(--font-heading);
-
-    font-size: clamp(
-            1.4rem,
-            2.5vw,
-            2.5rem
-    );
-
-    line-height: 1;
-
-    letter-spacing: -0.04em;
-
-    font-weight: 700;
-}
-
-/* =========================================================
-   TECHNICAL GRID
-========================================================= */
-
-.tech-grid {
-    background-image:
-            linear-gradient(
-                    rgba(17, 17, 17, 0.045) 1px,
-                    transparent 1px
-            ),
-            linear-gradient(
-                    90deg,
-                    rgba(17, 17, 17, 0.045) 1px,
-                    transparent 1px
-            );
-
-    background-size: 32px 32px;
-}
-
-/* =========================================================
-   MACHINE FRAME
-========================================================= */
-
-.machine-frame {
-    position: relative;
-
-    background:
-            linear-gradient(
-                    135deg,
-                    #faf9f4,
-                    #ebe7dc
-            );
-
-    border: 1px solid rgba(17, 17, 17, 0.12);
-
-    border-radius: 32px;
-
-    overflow: hidden;
-
-    box-shadow:
-            inset 0 1px 0 rgba(255, 255, 255, 0.8),
-            0 25px 70px rgba(17, 17, 17, 0.12);
-}
-
-.machine-frame::before {
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-            radial-gradient(
-                    circle at 50% 40%,
-                    rgba(245, 196, 0, 0.2),
-                    transparent 35%
-            );
-
-    pointer-events: none;
-}
-
-/* =========================================================
-   DRINK CARD
-========================================================= */
-
-.drink-card-modern {
-    position: relative;
-
-    background: #faf9f4;
-
-    border: 1px solid rgba(17, 17, 17, 0.1);
-
-    border-radius: 22px;
-
-    overflow: hidden;
-
-    transition:
-            transform 0.25s ease,
-            box-shadow 0.25s ease,
-            border-color 0.25s ease;
-}
-
-.drink-card-modern:hover {
-    transform: translateY(-6px);
-
-    border-color: rgba(245, 196, 0, 0.8);
-
-    box-shadow:
-            0 18px 40px rgba(17, 17, 17, 0.1);
-}
-
-.drink-card-modern.selected {
-    border: 2px solid #111111;
-
-    box-shadow:
-            0 15px 35px rgba(245, 196, 0, 0.18);
-}
-
-/* =========================================================
-   RANGE
-========================================================= */
 
 input[type="range"] {
+    width: 100%;
+    height: 6px;
+
     appearance: none;
     -webkit-appearance: none;
 
-    width: 100%;
-
-    height: 5px;
+    background: var(--surface-soft);
 
     border-radius: 999px;
-
-    background: #d8d5cc;
-
     outline: none;
 }
 
@@ -546,14 +572,12 @@ input[type="range"]::-webkit-slider-thumb {
 
     border-radius: 50%;
 
-    border: 3px solid #111;
-
     background: var(--yellow);
+    border: 3px solid var(--surface-solid);
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 
     cursor: pointer;
-
-    box-shadow:
-            0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -562,42 +586,134 @@ input[type="range"]::-moz-range-thumb {
 
     border-radius: 50%;
 
-    border: 3px solid #111;
-
     background: var(--yellow);
+    border: 3px solid var(--surface-solid);
 
     cursor: pointer;
 }
 
 /* =========================================================
-   STATUS DOT
-========================================================= */
+   DRINK IMAGE CONTAINER
+   ========================================================= */
 
-.status-online {
-    width: 8px;
-    height: 8px;
+.drink-image {
+    position: relative;
 
-    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    background: #159447;
+    overflow: hidden;
 
-    box-shadow:
-            0 0 0 4px rgba(21, 148, 71, 0.12);
+    min-height: 180px;
+
+    background:
+            radial-gradient(
+                    circle at center,
+                    rgba(255, 212, 0, 0.12),
+                    transparent 60%
+            ),
+            var(--surface-soft);
+
+    border-radius: 22px;
 }
 
-.status-warning {
-    width: 8px;
-    height: 8px;
+.drink-image img {
+    max-height: 155px;
+    object-fit: contain;
 
-    border-radius: 50%;
+    transition:
+            transform 0.35s ease,
+            filter 0.35s ease;
+}
+
+.drink-image:hover img {
+    transform: scale(1.06) translateY(-3px);
+}
+
+/* =========================================================
+   SECTION LABEL
+   ========================================================= */
+
+.section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+
+    color: var(--text-secondary);
+}
+
+.section-label::before {
+    content: "";
+
+    width: 22px;
+    height: 3px;
+
+    border-radius: 999px;
 
     background: var(--yellow);
-
-    box-shadow:
-            0 0 0 4px rgba(245, 196, 0, 0.15);
 }
 
-.status-danger {
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero-orb {
+    position: absolute;
+
+    width: 380px;
+    height: 380px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 212, 0, 0.12);
+
+    filter: blur(90px);
+
+    pointer-events: none;
+}
+
+/* =========================================================
+   MACHINE IMAGE
+   ========================================================= */
+
+.machine-image {
+    filter:
+            drop-shadow(0 25px 35px rgba(0, 0, 0, 0.18))
+            drop-shadow(0 0 40px rgba(255, 212, 0, 0.08));
+
+    transition: transform 0.5s ease;
+}
+
+.machine-image:hover {
+    transform: translateY(-6px) scale(1.02);
+}
+
+/* =========================================================
+   STATUS DOT
+   ========================================================= */
+
+.status-dot-online {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--green);
+
+    box-shadow: 0 0 0 4px rgba(25, 169, 116, 0.12);
+
+    animation: statusPulse 2s infinite;
+}
+
+.status-dot-offline {
     width: 8px;
     height: 8px;
 
@@ -605,34 +721,28 @@ input[type="range"]::-moz-range-thumb {
 
     background: var(--red);
 
-    box-shadow:
-            0 0 0 4px rgba(230, 57, 47, 0.12);
+    box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
 }
 
-/* =========================================================
-   ANIMATIONS
-========================================================= */
-
-@keyframes floatMachine {
+@keyframes statusPulse {
     0%,
     100% {
-        transform: translateY(0);
+        box-shadow: 0 0 0 4px rgba(25, 169, 116, 0.1);
     }
 
     50% {
-        transform: translateY(-8px);
+        box-shadow: 0 0 0 8px rgba(25, 169, 116, 0.03);
     }
 }
 
-.animate-machine {
-    animation:
-            floatMachine 4s ease-in-out infinite;
-}
+/* =========================================================
+   OLD NEON ANIMATION — SOFTENED
+   ========================================================= */
 
-@keyframes pulseYellow {
+@keyframes neonPulse {
     0%,
     100% {
-        opacity: 0.7;
+        opacity: 0.85;
     }
 
     50% {
@@ -640,23 +750,54 @@ input[type="range"]::-moz-range-thumb {
     }
 }
 
-.animate-yellow-pulse {
-    animation:
-            pulseYellow 2s ease-in-out infinite;
+.animate-neon-pulse {
+    animation: neonPulse 2s infinite ease-in-out;
 }
 
 /* =========================================================
-   RESPONSIVE
-========================================================= */
+   LIQUID
+   ========================================================= */
+
+.liquid-wave-bg {
+    background: linear-gradient(
+            180deg,
+            rgba(255, 212, 0, 0.85),
+            rgba(255, 180, 0, 0.95)
+    );
+
+    box-shadow: 0 0 25px rgba(255, 212, 0, 0.18);
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media (max-width: 768px) {
-    .modern-card {
-        border-radius: 18px;
+    .glass-panel {
+        border-radius: 20px;
     }
 
-    .black-card,
-    .yellow-card,
-    .red-card {
-        border-radius: 18px;
+    .modern-card {
+        border-radius: 20px;
+    }
+
+    .hero-orb {
+        width: 240px;
+        height: 240px;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

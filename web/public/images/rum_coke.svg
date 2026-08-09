@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 520">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a4b2a" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#3a2117" stop-opacity=".98"/>
+    </linearGradient>
+    <filter id="s" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-opacity=".14"/>
+    </filter>
+  </defs>
+  <rect width="640" height="520" rx="40" fill="#f4f0e7"/>
+  <ellipse cx="320" cy="435" rx="145" ry="22" fill="#000" opacity=".08"/>
+  <g filter="url(#s)">
+    <path d="M215 105h210l-22 286c-2 28-24 47-52 47h-62c-28 0-50-19-52-47z" fill="url(#g)" opacity=".95"/>
+    <path d="M215 105h210" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".85"/>
+    <path d="M228 140h184" stroke="#fff" stroke-width="5" opacity=".22"/>
+    <g fill="#fff" opacity=".55">
+      <rect x="260" y="175" width="58" height="45" rx="8" transform="rotate(12 289 197)"/>
+      <rect x="330" y="220" width="62" height="46" rx="8" transform="rotate(-10 361 243)"/>
+      <rect x="252" y="285" width="55" height="42" rx="8" transform="rotate(-8 279 306)"/>
+    </g>
+    <path d="M225 108c38-34 152-34 190 0" fill="none" stroke="#fff" stroke-width="8" opacity=".7"/>
+  </g>
+  <text x="320" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="800" fill="#111">Rum & Coke</text>
+</svg>

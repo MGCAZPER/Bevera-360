@@ -99,6 +99,79 @@ export const DEFAULT_PRESET_DRINKS = [
     stirrerSec: 5,
     popular: true
   }
+,
+  {
+    id: 'drink_rum_coke',
+    numBadge: 6,
+    name: 'Rum & Coke',
+    priceLkr: 420,
+    prepTime: '1-2 min',
+    category: 'Classic Cocktail',
+    ingredientsSummary: '50ml Rum, 150ml Cola, Ice',
+    image: '/images/rum_coke.svg',
+    ingredientsDetailed: [
+      { name: 'Rum', amount: '50ml' },
+      { name: 'Cola', amount: '150ml' },
+      { name: 'Ice', amount: 'As needed' }
+    ],
+    volumesMl: [50, 150, 0, 0, 0],
+    stirrerSec: 3,
+    popular: false
+  },
+  {
+    id: 'drink_gin_tonic',
+    numBadge: 7,
+    name: 'Gin & Tonic',
+    priceLkr: 440,
+    prepTime: '1-2 min',
+    category: 'Classic Cocktail',
+    ingredientsSummary: '50ml Gin, 150ml Tonic, Ice',
+    image: '/images/gin_tonic.svg',
+    ingredientsDetailed: [
+      { name: 'Gin', amount: '50ml' },
+      { name: 'Tonic Water', amount: '150ml' },
+      { name: 'Ice', amount: 'As needed' }
+    ],
+    volumesMl: [50, 150, 0, 0, 0],
+    stirrerSec: 3,
+    popular: false
+  },
+  {
+    id: 'drink_screwdriver',
+    numBadge: 8,
+    name: 'Screwdriver',
+    priceLkr: 430,
+    prepTime: '1-2 min',
+    category: 'Classic Cocktail',
+    ingredientsSummary: '50ml Vodka, 150ml Orange Juice, Ice',
+    image: '/images/screwdriver.svg',
+    ingredientsDetailed: [
+      { name: 'Vodka', amount: '50ml' },
+      { name: 'Orange Juice', amount: '150ml' },
+      { name: 'Ice', amount: 'As needed' }
+    ],
+    volumesMl: [50, 150, 0, 0, 0],
+    stirrerSec: 3,
+    popular: false
+  },
+  {
+    id: 'drink_whiskey_ginger',
+    numBadge: 9,
+    name: 'Whiskey Ginger',
+    priceLkr: 450,
+    prepTime: '1-2 min',
+    category: 'Classic Cocktail',
+    ingredientsSummary: '50ml Whiskey, 150ml Ginger Ale, Ice',
+    image: '/images/whiskey_ginger.svg',
+    ingredientsDetailed: [
+      { name: 'Whiskey', amount: '50ml' },
+      { name: 'Ginger Ale', amount: '150ml' },
+      { name: 'Ice', amount: 'As needed' }
+    ],
+    volumesMl: [50, 150, 0, 0, 0],
+    stirrerSec: 3,
+    popular: false
+  }
 ];
 
 export const DEFAULT_TANKS = [

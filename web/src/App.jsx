@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 
 function AppContent() {
-  const { activeScreen } = useBartender();
+  const { activeScreen, drinks } = useBartender();
   const menuRef = useRef(null);
 
   const scrollToMenu = () => {
@@ -167,7 +167,7 @@ function AppContent() {
 
               <div className="flex items-center gap-2">
                 <div className="rounded-full border border-black/10 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-neutral-500 shadow-sm">
-                  05 Available
+                  {String(drinks.length).padStart(2, "0")} Available
                 </div>
 
                 <button
