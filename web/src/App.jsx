@@ -1,372 +1,81 @@
-import React, { useRef } from "react";
-import { BartenderProvider, useBartender } from "./context/BartenderContext";
+import React, { useRef } from 'react';
+import { BartenderProvider, useBartender } from './context/BartenderContext';
+import { Header } from './components/Header';
+import { DrinkSelectionGrid } from './components/DrinkSelectionGrid';
+import { CustomizationPanel } from './components/CustomizationPanel';
+import { OrderSummaryCard } from './components/OrderSummaryCard';
+import { MachineStatusPanel } from './components/MachineStatusPanel';
+import { PreparationScreen } from './components/PreparationScreen';
+import { CompletionScreen } from './components/CompletionScreen';
+import { AdminDashboard } from './components/AdminDashboard';
+import { SystemCalibration } from './components/SystemCalibration';
+import { ManualDiagnostics } from './components/ManualDiagnostics';
+import { FigmaBoard } from './components/FigmaBoard';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { ArrowRight, PlayCircle, Martini, UsersRound, Award, CalendarDays, MapPin, Phone, Mail, Cpu, Gauge, ShieldCheck, Zap, Droplets, Activity, RefreshCw } from 'lucide-react';
 
-import { Header } from "./components/Header";
-import { HeroSection } from "./components/HeroSection";
-import { DrinkSelectionGrid } from "./components/DrinkSelectionGrid";
-import { CustomizationPanel } from "./components/CustomizationPanel";
-import { OrderSummaryCard } from "./components/OrderSummaryCard";
-import { MachineStatusPanel } from "./components/MachineStatusPanel";
-
-import { PreparationScreen } from "./components/PreparationScreen";
-import { CompletionScreen } from "./components/CompletionScreen";
-
-import { AdminDashboard } from "./components/AdminDashboard";
-import { SystemCalibration } from "./components/SystemCalibration";
-import { ManualDiagnostics } from "./components/ManualDiagnostics";
-import { MobileBottomNav } from "./components/MobileBottomNav";
-import { FigmaBoard } from "./components/FigmaBoard";
-
-import {
-  ArrowUpRight,
-  Bot,
-  Cpu,
-  Gauge,
-  ShieldCheck,
-  Sparkles,
-  Zap,
-} from "lucide-react";
-
-function AppContent() {
-  const { activeScreen, drinks } = useBartender();
+function MainPage() {
+  const { activeScreen, selectedDrink, liquidParameters, flowRates, cupDetected, esp32Connected, hardwareMode, currentLiquidMl, totalLiquidMl, activePumpIdx, pumpsState, pollEsp32 } = useBartender();
   const menuRef = useRef(null);
+  const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
-  const scrollToMenu = () => {
-    if (menuRef.current) {
-      menuRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
+  if (activeScreen === 'admin') return <AdminDashboard />;
+  if (activeScreen === 'calibration') return <SystemCalibration />;
+  if (activeScreen === 'diagnostics') return <ManualDiagnostics />;
+  if (activeScreen === 'preparation') return <PreparationScreen />;
+  if (activeScreen === 'completion') return <CompletionScreen />;
+  if (activeScreen === 'figma_board') return <FigmaBoard />;
 
-  const renderScreen = () => {
-    if (activeScreen === "figma_board") {
-      return <FigmaBoard />;
-    }
-
-    if (activeScreen === "admin") {
-      return <AdminDashboard />;
-    }
-
-    if (activeScreen === "calibration") {
-      return <SystemCalibration />;
-    }
-
-    if (activeScreen === "diagnostics") {
-      return <ManualDiagnostics />;
-    }
-
-    if (activeScreen === "preparation") {
-      return <PreparationScreen />;
-    }
-
-    if (activeScreen === "completion") {
-      return <CompletionScreen />;
-    }
-
-    return (
-        <>
-          {/* HERO */}
-          <section className="relative overflow-hidden rounded-[32px] border border-black/10 bg-[#f7f6f2] shadow-[0_20px_80px_rgba(0,0,0,0.08)]">
-            {/* Decorative background */}
-            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#ffd400]/30 blur-3xl" />
-
-            <div className="absolute bottom-0 right-1/3 h-56 w-56 rounded-full bg-[#ff3b30]/10 blur-3xl" />
-
-            <div className="absolute left-0 top-1/2 h-40 w-40 -translate-y-1/2 rounded-full bg-black/5 blur-3xl" />
-
-            <div className="relative z-10">
-              <HeroSection onStartOrdering={scrollToMenu} />
-            </div>
-          </section>
-
-          {/* TRUST / SYSTEM STRIP */}
-          <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            <div className="group rounded-2xl border border-black/10 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white">
-                <Bot size={19} />
-              </div>
-
-              <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
-                System
-              </p>
-
-              <p className="mt-1 text-sm font-black text-black">
-                Robotic Control
-              </p>
-            </div>
-
-            <div className="group rounded-2xl border border-black/10 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffd400] text-black">
-                <Gauge size={19} />
-              </div>
-
-              <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
-                Accuracy
-              </p>
-
-              <p className="mt-1 text-sm font-black text-black">
-                ML Precision
-              </p>
-            </div>
-
-            <div className="group rounded-2xl border border-black/10 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#ff3b30] text-white">
-                <Zap size={19} />
-              </div>
-
-              <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
-                Response
-              </p>
-
-              <p className="mt-1 text-sm font-black text-black">
-                Fast Dispensing
-              </p>
-            </div>
-
-            <div className="group rounded-2xl border border-black/10 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white">
-                <ShieldCheck size={19} />
-              </div>
-
-              <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
-                Safety
-              </p>
-
-              <p className="mt-1 text-sm font-black text-black">
-                Smart Interlock
-              </p>
-            </div>
-          </section>
-
-          {/* DRINK SELECTION */}
-          <section
-              ref={menuRef}
-              id="drink-selection-section"
-              className="scroll-mt-24"
-          >
-            <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
-              <div>
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-[#ff3b30]" />
-
-                  <span className="text-[10px] font-black uppercase tracking-[0.25em] text-neutral-500">
-                  Beverage Library
-                </span>
-                </div>
-
-                <h2 className="text-3xl font-black tracking-tight text-black md:text-4xl">
-                  Choose your{" "}
-                  <span className="relative inline-block">
-                  drink.
-                  <span className="absolute -bottom-1 left-0 h-2 w-full -rotate-1 rounded-full bg-[#ffd400]" />
-                </span>
-                </h2>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <div className="rounded-full border border-black/10 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-neutral-500 shadow-sm">
-                  {String(drinks.length).padStart(2, "0")} Available
-                </div>
-
-                <button
-                    onClick={scrollToMenu}
-                    className="flex items-center gap-2 rounded-full bg-black px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-[#ff3b30]"
-                >
-                  Explore
-                  <ArrowUpRight size={13} />
-                </button>
-              </div>
-            </div>
-
-            <DrinkSelectionGrid />
-          </section>
-
-          {/* CUSTOMIZATION + ORDER */}
-          <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              <div className="h-full rounded-[28px] border border-black/10 bg-white p-5 shadow-[0_15px_50px_rgba(0,0,0,0.06)] md:p-6">
-                <div className="mb-5 flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-neutral-400">
-                      Personalization
-                    </p>
-
-                    <h3 className="mt-1 text-xl font-black text-black">
-                      Make it yours
-                    </h3>
-                  </div>
-
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffd400] text-black">
-                    <Sparkles size={18} />
-                  </div>
-                </div>
-
-                <CustomizationPanel />
-              </div>
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="relative h-full overflow-hidden rounded-[28px] border border-black bg-black p-5 text-white shadow-[0_20px_60px_rgba(0,0,0,0.18)] md:p-6">
-                <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[#ffd400]/20 blur-3xl" />
-
-                <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-[#ff3b30]/20 blur-3xl" />
-
-                <div className="relative z-10">
-                  <div className="mb-5 flex items-center justify-between">
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.25em] text-neutral-500">
-                        Checkout
-                      </p>
-
-                      <h3 className="mt-1 text-xl font-black">
-                        Your order
-                      </h3>
-                    </div>
-
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffd400] text-black">
-                      <Zap size={18} />
-                    </div>
-                  </div>
-
-                  <OrderSummaryCard />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* MACHINE STATUS */}
-          <section>
-            <div className="mb-4 flex items-end justify-between">
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-neutral-400">
-                  Hardware Monitor
-                </p>
-
-                <h2 className="mt-1 text-2xl font-black text-black">
-                  Machine status
-                </h2>
-              </div>
-
-              <div className="hidden items-center gap-2 rounded-full bg-black px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white md:flex">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-[#ffd400]" />
-                ESP32 System
-              </div>
-            </div>
-
-            <div className="rounded-[28px] border border-black/10 bg-white p-4 shadow-sm md:p-6">
-              <MachineStatusPanel />
-            </div>
-          </section>
-        </>
-    );
-  };
-
-  return (
-      <div className="min-h-screen bg-[#efeee9] text-black">
-        {/* Background decoration */}
-        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-          <div className="absolute left-[5%] top-[15%] h-40 w-40 rounded-full bg-[#ffd400]/10 blur-3xl" />
-
-          <div className="absolute right-[5%] top-[35%] h-60 w-60 rounded-full bg-[#ff3b30]/5 blur-3xl" />
+  return <div className="site-page">
+    <section className="hero" id="home">
+      <div className="hero-bg" />
+      <div className="hero-motion" aria-hidden="true"><span className="orb orb-a"/><span className="orb orb-b"/><span className="orb orb-c"/><span className="pour-stream"/><span className="motion-ring ring-a"/><span className="motion-ring ring-b"/></div>
+      <div className="hero-content"><div className="hero-copy">
+        <div className="eyebrow"><span /> PROFESSIONAL BARTENDING <span /></div>
+        <h1>CRAFTING DRINKS<br />CREATING MEMORIES</h1>
+        <p>Choose your drink, tune the liquid parameters and let the ESP32-controlled dispensing system prepare it with sensor-verified precision.</p>
+        <div className="hero-actions">
+          <button className="gold-btn" onClick={() => scrollTo('menu')}>BOOK NOW <ArrowRight size={18} /></button>
+          <button className="outline-btn" onClick={() => scrollTo('system')}><PlayCircle size={18} /> WATCH SYSTEM</button>
         </div>
+      </div></div>
+    </section>
 
-        {/* HEADER */}
-        <Header />
+    <section className="feature-strip" id="services">
+      <div className="feature"><div className="feature-icon"><Martini /></div><div><b>SMART RECIPES</b><p>Drink recipes with exact liquid volumes and pump mapping.</p></div></div>
+      <div className="feature"><div className="feature-icon"><Gauge /></div><div><b>LIQUID PARAMETERS</b><p>Flow rate, target ml and dispense time per pump.</p></div></div>
+      <div className="feature"><div className="feature-icon"><UsersRound /></div><div><b>ESP32 CONTROL</b><p>Live hardware status with API polling and command control.</p></div></div>
+      <div className="feature"><div className="feature-icon"><ShieldCheck /></div><div><b>IR SAFETY</b><p>Cup detection interlock pauses pumps when the cup is removed.</p></div></div>
+    </section>
 
-        {/* MAIN */}
-        <main className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-5 md:px-6 lg:px-8">
-          {renderScreen()}
-        </main>
+    <section className="about-section" id="about">
+      <div className="about-image"><img src="/images/robo_machine.png" alt="Automated bartender machine" /></div>
+      <div className="about-copy"><div className="section-kicker">ABOUT US <i /></div><h2>PASSION FOR PRECISION</h2><p>More than a cocktail interface, this is a complete smart beverage control surface: recipes, customization, liquid parameters, ESP32 connectivity, IR cup detection, pump control, calibration, diagnostics and order tracking.</p><div className="signature">Cheers!</div><span>The Bartender Team</span></div>
+      <div className="stats"><div><strong>500+</strong><span>Events Completed</span></div><div><strong>1000+</strong><span>Happy Clients</span></div><div><strong>5+</strong><span>Years Experience</span></div></div>
+    </section>
 
-        {/* MOBILE NAV */}
-        <MobileBottomNav />
+    <section className="menu-section" id="menu" ref={menuRef}>
+      <div className="menu-heading"><div><div className="section-kicker">SIGNATURE COCKTAILS <i /></div><h2>OUR DRINKS</h2><p>Select a recipe to see ingredients, volumes, customization and machine parameters.</p></div><div className="availability">04 AVAILABLE</div></div>
+      <DrinkSelectionGrid />
+    </section>
 
-        {/* FOOTER */}
-        <footer className="border-t border-black/10 bg-black px-5 py-10 text-white md:px-8">
-          <div className="mx-auto flex max-w-[1500px] flex-col gap-8">
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
-              <div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ffd400] text-black">
-                    <Bot size={21} />
-                  </div>
+    <section className="order-section" id="contact">
+      <div className="custom-box"><div className="box-title"><div><span>PERSONALIZATION</span><h3>MAKE IT YOURS</h3></div><Zap /></div><CustomizationPanel /></div>
+      <div className="order-box"><div className="box-title"><div><span>CHECKOUT</span><h3>YOUR ORDER</h3></div><Activity /></div><OrderSummaryCard /></div>
+    </section>
 
-                  <div>
-                    <h3 className="text-lg font-black tracking-tight">
-                      BEVERA<span className="text-[#ffd400]">360</span>
-                    </h3>
-
-                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-500">
-                      Smart Robotic Bartender
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                  <Cpu size={15} className="mb-2 text-[#ffd400]" />
-
-                  <p className="text-[9px] uppercase tracking-widest text-neutral-500">
-                    Controller
-                  </p>
-
-                  <p className="text-xs font-bold">ESP32</p>
-                </div>
-
-                <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                  <Gauge size={15} className="mb-2 text-[#ffd400]" />
-
-                  <p className="text-[9px] uppercase tracking-widest text-neutral-500">
-                    Accuracy
-                  </p>
-
-                  <p className="text-xs font-bold">±1ml</p>
-                </div>
-
-                <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                  <Zap size={15} className="mb-2 text-[#ff3b30]" />
-
-                  <p className="text-[9px] uppercase tracking-widest text-neutral-500">
-                    Dispense
-                  </p>
-
-                  <p className="text-xs font-bold">Fast</p>
-                </div>
-
-                <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                  <ShieldCheck size={15} className="mb-2 text-[#ffd400]" />
-
-                  <p className="text-[9px] uppercase tracking-widest text-neutral-500">
-                    Safety
-                  </p>
-
-                  <p className="text-xs font-bold">Active</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-[10px] text-neutral-500 md:flex-row">
-              <p>
-                © 2026 Bevera360. Smart Beverage Dispensing System.
-              </p>
-
-              <p className="font-mono">
-                ROBOTICS • ESP32 • AUTOMATION • PRECISION
-              </p>
-            </div>
-          </div>
-        </footer>
+    <section className="system-section" id="system">
+      <div className="system-heading"><div><div className="section-kicker">HARDWARE MONITOR <i /></div><h2>ESP32 + LIQUID CONTROL</h2><p>Live sensor detection, pump activation and exact liquid parameters.</p></div><button className="system-refresh" onClick={pollEsp32}><RefreshCw size={15} /> REFRESH ESP32</button></div>
+      <div className="system-grid">
+        <div className="system-card sensor-card"><div className="system-card-head"><span>ESP32 CONNECTION</span><span className={esp32Connected ? 'online-dot' : 'offline-dot'}>{esp32Connected ? 'ONLINE' : 'OFFLINE'}</span></div><div className="sensor-main"><Cpu size={30} /><div><strong>{hardwareMode === 'LIVE_ESP32' ? 'LIVE ESP32' : 'SIMULATION DEMO'}</strong><small>{esp32Connected ? 'API status polling active' : 'Check IP / Wi-Fi and ESP32 API'}</small></div></div><div className="sensor-row"><span>IR CUP SENSOR</span><b className={cupDetected ? 'ok' : 'danger'}>{cupDetected ? 'DETECTED / LOW' : 'EMPTY / HIGH'}</b></div></div>
+        <div className="system-card liquid-card"><div className="system-card-head"><span>LIQUID PARAMETERS · {selectedDrink.name}</span><span>{currentLiquidMl.toFixed(0)} / {totalLiquidMl.toFixed(0)} ML</span></div><div className="liquid-list">{liquidParameters.map(p => <div className="liquid-row" key={p.pump}><div><b>P{p.pump} · {p.ingredient}</b><small>{p.targetMl} ml target · {p.flowMlSec.toFixed(1)} ml/s · {p.seconds.toFixed(1)}s</small></div><span>{p.targetMl} ML</span></div>)}</div></div>
+        <div className="system-card pump-card"><div className="system-card-head"><span>PUMP RELAY ACTIVITY</span><span>{activePumpIdx >= 0 ? `PUMP ${activePumpIdx + 1} ACTIVE` : 'IDLE'}</span></div><div className="pump-grid">{pumpsState.map((p, i) => <div key={p.id} className={`pump-tile ${p.status === 'ON' ? 'pump-on' : ''}`}><Droplets size={16} /><b>P{i + 1}</b><small>{p.status}</small></div>)}</div><div className="pump-note">{activePumpIdx >= 0 ? `Dispensing ${liquidParameters.find(x => x.pump - 1 === activePumpIdx)?.ingredient || 'liquid'} through Pump ${activePumpIdx + 1}.` : 'Pumps remain OFF until a cup is detected and a dispense cycle is active.'}</div></div>
       </div>
-  );
+    </section>
+
+    <section className="contact-band" id="gallery"><div><div className="section-kicker">LET'S CELEBRATE <i /></div><h2>MAKE YOUR NEXT EVENT<br /><em>UNFORGETTABLE.</em></h2></div><div className="contact-details"><span><CalendarDays /> Book your date</span><span><MapPin /> Events across Sri Lanka</span><a href="tel:0722104960"><Phone /> 0722104960</a><a href="mailto:bevera360@gmail.com"><Mail /> bevera360@gmail.com</a></div></section>
+  </div>;
 }
 
-export default function App() {
-  return (
-      <BartenderProvider>
-        <AppContent />
-      </BartenderProvider>
-  );
-}
+function App() { return <BartenderProvider><Header /><main><MainPage /></main><MobileBottomNav /></BartenderProvider>; }
+export default App;

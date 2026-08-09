@@ -1,16 +1,57 @@
-# React + Vite
+# Bartender – Smart ESP32 Beverage Control UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Luxury black/gold bartender UI with the original control features restored.
 
-Currently, two official plugins are available:
+## Included
+- 4 signature drinks with matching images
+- Ingredient + exact liquid volume display
+- 5-channel pump mapping and flow-rate parameters
+- ESP32 LIVE / Simulation Demo modes
+- ESP32 `/api/status` polling
+- IR cup detection / active-low GPIO 4 interlock
+- Automatic pump shutdown when the cup is removed
+- Pump activation during recipe dispensing (mapped to non-zero recipe channels)
+- Stirrer + preparation state machine
+- Custom Mixology Lab with 5 pump volume controls
+- Pump calibration bench
+- Manual diagnostics
+- Admin dashboard / tank inventory / order queue
+- Emergency stop
+- Preparation and completion screens
+- Responsive luxury black/gold design matching the supplied bartender reference
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Run
 
-## React Compiler
+```bash
+npm install
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ESP32 API expected by the UI
 
-## Expanding the Oxlint configuration
+`GET /api/status`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Supported status fields include:
+- `cup_present` (boolean), or `ir_gpio4` / `gpio4` (0 = cup, 1 = empty)
+- `state`: `IDLE`, `WAITING_FOR_CUP`, `POURING`, `MIXING`, `PAUSED_NO_CUP`, `COMPLETED`
+- `flow_rates_ml_sec.pump_1 ... pump_5`
+- optional `temperature`, `water_level`, `wifi_signal`
+
+`POST /api/order`
+
+```json
+{
+  "drink_name": "Rum & Coke",
+  "volumes_ml": [50,150,0,0,0],
+  "stirrer_sec": 3,
+  "cup_size": "Medium",
+  "ice_level": 60,
+  "sweetness": 80
+}
+```
+
+`POST /api/stop`
+
+`POST /api/calibrate` with `{ "pump_index": 1, "flow_rate_ml_sec": 15 }`
+
+`POST /api/manual` with `{ "target": "pump_1", "state": true }`
