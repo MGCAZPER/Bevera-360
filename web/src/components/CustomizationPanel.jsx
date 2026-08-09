@@ -1,6 +1,14 @@
-import React from 'react';
-import { useBartender } from '../context/BartenderContext';
-import { Snowflake, Droplet, Plus, Check } from 'lucide-react';
+import React from "react";
+import { useBartender } from "../context/BartenderContext";
+import {
+  Snowflake,
+  Droplet,
+  Plus,
+  Check,
+  SlidersHorizontal,
+  GlassWater,
+  Sparkles,
+} from "lucide-react";
 
 export const CustomizationPanel = () => {
   const {
@@ -11,129 +19,705 @@ export const CustomizationPanel = () => {
     cupSize,
     setCupSize,
     selectedExtras,
-    toggleExtra
+    toggleExtra,
   } = useBartender();
 
   const extraOptions = [
-    { name: 'Extra Mint', priceLkr: 20 },
-    { name: 'Extra Shot', priceLkr: 30 },
-    { name: 'Extra Flavor', priceLkr: 20 }
+    {
+      name: "Extra Mint",
+      priceLkr: 20,
+    },
+    {
+      name: "Extra Shot",
+      priceLkr: 30,
+    },
+    {
+      name: "Extra Flavor",
+      priceLkr: 20,
+    },
   ];
 
   return (
-    <div className="glass-panel p-5 border border-cyan-500/20 space-y-5 bg-[#080d1a]">
-      
-      {/* Header */}
-      <div className="border-b border-cyan-500/15 pb-2">
-        <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest">
-          CUSTOMIZE YOUR DRINK
-        </h3>
-      </div>
+      <section
+          className="
+        relative
+        overflow-hidden
+        rounded-2xl
+        border
+        border-white/[0.07]
+        bg-gradient-to-br
+        from-[#0b1424]/90
+        via-[#07101d]/90
+        to-[#050b14]/95
+        p-4
+        shadow-[0_20px_50px_rgba(0,0,0,.35)]
+        backdrop-blur-2xl
+      "
+      >
+        {/* Background glow */}
 
-      <div className="space-y-4 text-xs">
-        
-        {/* 1. Ice Level Slider */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-slate-300 font-bold text-[11px]">
-            <span>Ice Level</span>
+        <div
+            className="
+          pointer-events-none
+          absolute
+          -right-20
+          -top-20
+          h-48
+          w-48
+          rounded-full
+          bg-cyan-400/[0.06]
+          blur-[70px]
+        "
+        />
+
+        <div
+            className="
+          pointer-events-none
+          absolute
+          -bottom-24
+          -left-20
+          h-44
+          w-44
+          rounded-full
+          bg-blue-500/[0.05]
+          blur-[70px]
+        "
+        />
+
+        {/* =====================================================
+          HEADER
+      ===================================================== */}
+
+        <div
+            className="
+          relative
+          z-10
+          mb-4
+          flex
+          items-center
+          justify-between
+          border-b
+          border-white/[0.06]
+          pb-3
+        "
+        >
+          <div className="flex items-center gap-3">
+
+            <div
+                className="
+              flex
+              h-9
+              w-9
+              items-center
+              justify-center
+              rounded-xl
+              border
+              border-cyan-400/20
+              bg-cyan-400/[0.06]
+              text-cyan-400
+              shadow-[0_0_15px_rgba(0,240,255,.08)]
+            "
+            >
+              <SlidersHorizontal size={16} />
+            </div>
+
+            <div>
+              <h3
+                  className="
+                font-[Outfit]
+                text-sm
+                font-extrabold
+                uppercase
+                tracking-[0.08em]
+                text-white
+              "
+              >
+                Customize Your Drink
+              </h3>
+
+              <p className="mt-0.5 text-[9px] text-slate-500">
+                Adjust your beverage exactly how you like it
+              </p>
+            </div>
+
           </div>
 
-          <div className="flex items-center gap-3 bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-            <Snowflake size={14} className="text-slate-500 flex-shrink-0" />
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={iceLevelVal}
-              onChange={(e) => setIceLevelVal(parseInt(e.target.value))}
-              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00f0ff]"
-            />
-            <Snowflake size={16} className="text-[#00f0ff] flex-shrink-0" />
+          <div
+              className="
+            hidden
+            items-center
+            gap-1.5
+            rounded-full
+            border
+            border-cyan-400/10
+            bg-cyan-400/[0.04]
+            px-2.5
+            py-1.5
+            sm:flex
+          "
+          >
+            <Sparkles size={10} className="text-cyan-400" />
+
+            <span
+                className="
+              text-[8px]
+              font-bold
+              uppercase
+              tracking-wider
+              text-cyan-400
+            "
+            >
+            Personalize
+          </span>
           </div>
         </div>
 
-        {/* 2. Sweetness Slider */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-slate-300 font-bold text-[11px]">
-            <span>Sweetness</span>
-          </div>
+        <div className="relative z-10 space-y-4">
 
-          <div className="flex items-center gap-3 bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-            <Droplet size={14} className="text-slate-500 flex-shrink-0" />
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={sweetnessVal}
-              onChange={(e) => setSweetnessVal(parseInt(e.target.value))}
-              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00f0ff]"
-            />
-            <Droplet size={16} className="text-[#00f0ff] flex-shrink-0" />
-          </div>
-        </div>
+          {/* ===================================================
+            ICE LEVEL
+        =================================================== */}
 
-        {/* 3. Cup Size Selector */}
-        <div className="space-y-1.5">
-          <span className="text-slate-300 font-bold text-[11px] block">Cup Size</span>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { size: 'Small', iconScale: 'h-4' },
-              { size: 'Medium', iconScale: 'h-6' },
-              { size: 'Large', iconScale: 'h-8' }
-            ].map((item) => {
-              const isSelected = cupSize === item.size;
-              return (
-                <button
-                  key={item.size}
-                  onClick={() => setCupSize(item.size)}
-                  className={`py-2 px-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all ${
-                    isSelected
-                      ? 'bg-cyan-500/20 border-[#00f0ff] text-[#00f0ff] shadow-[0_0_12px_rgba(0,240,255,0.3)]'
-                      : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-white'
-                  }`}
+          <div
+              className="
+            rounded-xl
+            border
+            border-white/[0.06]
+            bg-white/[0.02]
+            p-3
+            transition-all
+            hover:border-cyan-400/15
+            hover:bg-white/[0.035]
+          "
+          >
+            <div className="mb-2 flex items-center justify-between">
+
+              <div className="flex items-center gap-2">
+
+                <div
+                    className="
+                  flex
+                  h-7
+                  w-7
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-blue-400/[0.08]
+                  text-blue-300
+                "
                 >
-                  <div className={`w-3 ${item.iconScale} border border-current rounded-sm`} />
-                  <span className="text-[11px] font-extrabold">{item.size}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+                  <Snowflake size={14} />
+                </div>
 
-        {/* 4. Extra Ingredient */}
-        <div className="space-y-2 pt-1">
-          <span className="text-slate-300 font-bold text-[11px] block">Extra Ingredient</span>
-          <div className="space-y-1.5">
-            {extraOptions.map((opt) => {
-              const isChecked = selectedExtras.some(e => e.name === opt.name);
-              return (
-                <button
-                  key={opt.name}
-                  onClick={() => toggleExtra(opt)}
-                  className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-xs font-bold transition-all ${
-                    isChecked
-                      ? 'bg-cyan-500/20 border-[#00f0ff] text-[#00f0ff] shadow-[0_0_10px_rgba(0,240,255,0.2)]'
-                      : 'bg-slate-950/80 border-slate-800 text-slate-300 hover:text-white'
-                  }`}
+                <div>
+                  <p className="text-[10px] font-bold text-white">
+                    Ice Level
+                  </p>
+
+                  <p className="text-[8px] text-slate-600">
+                    Control the amount of ice
+                  </p>
+                </div>
+
+              </div>
+
+              <span
+                  className="
+                rounded-lg
+                border
+                border-cyan-400/10
+                bg-cyan-400/[0.04]
+                px-2
+                py-1
+                font-mono
+                text-[9px]
+                font-bold
+                text-cyan-400
+              "
+              >
+              {iceLevelVal}%
+            </span>
+
+            </div>
+
+            <div
+                className="
+              flex
+              items-center
+              gap-3
+              rounded-lg
+              border
+              border-white/[0.05]
+              bg-[#030811]/70
+              px-3
+              py-2.5
+            "
+            >
+              <Snowflake
+                  size={12}
+                  className="shrink-0 text-slate-600"
+              />
+
+              <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={iceLevelVal}
+                  onChange={(e) =>
+                      setIceLevelVal(parseInt(e.target.value))
+                  }
+                  className="
+                h-1.5
+                w-full
+                cursor-pointer
+                appearance-none
+                rounded-full
+                bg-slate-800
+                accent-cyan-400
+              "
+                  style={{
+                    background: `linear-gradient(
+                  to right,
+                  #00f0ff ${iceLevelVal}%,
+                  rgba(255,255,255,.08) ${iceLevelVal}%
+                )`,
+                  }}
+              />
+
+              <Snowflake
+                  size={16}
+                  className="shrink-0 text-cyan-400"
+              />
+            </div>
+          </div>
+
+          {/* ===================================================
+            SWEETNESS
+        =================================================== */}
+
+          <div
+              className="
+            rounded-xl
+            border
+            border-white/[0.06]
+            bg-white/[0.02]
+            p-3
+            transition-all
+            hover:border-cyan-400/15
+            hover:bg-white/[0.035]
+          "
+          >
+            <div className="mb-2 flex items-center justify-between">
+
+              <div className="flex items-center gap-2">
+
+                <div
+                    className="
+                  flex
+                  h-7
+                  w-7
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-cyan-400/[0.08]
+                  text-cyan-300
+                "
                 >
-                  <div>
-                    <span className="block font-bold">{opt.name}</span>
-                    <span className="text-[10px] text-slate-400 font-mono">LKR {opt.priceLkr}</span>
-                  </div>
+                  <Droplet size={14} />
+                </div>
 
-                  <div className={`w-5 h-5 rounded-lg flex items-center justify-center text-xs ${
-                    isChecked ? 'bg-[#00f0ff] text-slate-950 font-black' : 'bg-slate-900 border border-slate-700 text-slate-400'
-                  }`}>
-                    {isChecked ? <Check size={12} /> : <Plus size={12} />}
-                  </div>
-                </button>
-              );
-            })}
+                <div>
+                  <p className="text-[10px] font-bold text-white">
+                    Sweetness
+                  </p>
+
+                  <p className="text-[8px] text-slate-600">
+                    Choose your sweetness level
+                  </p>
+                </div>
+
+              </div>
+
+              <span
+                  className="
+                rounded-lg
+                border
+                border-cyan-400/10
+                bg-cyan-400/[0.04]
+                px-2
+                py-1
+                font-mono
+                text-[9px]
+                font-bold
+                text-cyan-400
+              "
+              >
+              {sweetnessVal}%
+            </span>
+
+            </div>
+
+            <div
+                className="
+              flex
+              items-center
+              gap-3
+              rounded-lg
+              border
+              border-white/[0.05]
+              bg-[#030811]/70
+              px-3
+              py-2.5
+            "
+            >
+              <Droplet
+                  size={12}
+                  className="shrink-0 text-slate-600"
+              />
+
+              <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={sweetnessVal}
+                  onChange={(e) =>
+                      setSweetnessVal(parseInt(e.target.value))
+                  }
+                  className="
+                h-1.5
+                w-full
+                cursor-pointer
+                appearance-none
+                rounded-full
+                bg-slate-800
+                accent-cyan-400
+              "
+                  style={{
+                    background: `linear-gradient(
+                  to right,
+                  #00f0ff ${sweetnessVal}%,
+                  rgba(255,255,255,.08) ${sweetnessVal}%
+                )`,
+                  }}
+              />
+
+              <Droplet
+                  size={16}
+                  className="shrink-0 text-cyan-400"
+              />
+            </div>
           </div>
+
+          {/* ===================================================
+            CUP SIZE
+        =================================================== */}
+
+          <div>
+
+            <div className="mb-2 flex items-center justify-between">
+
+              <div className="flex items-center gap-2">
+
+                <GlassWater
+                    size={13}
+                    className="text-cyan-400"
+                />
+
+                <span
+                    className="
+                  text-[10px]
+                  font-bold
+                  uppercase
+                  tracking-wider
+                  text-slate-300
+                "
+                >
+                Cup Size
+              </span>
+
+              </div>
+
+              <span className="text-[8px] text-slate-600">
+              {cupSize}
+            </span>
+
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+
+              {[
+                {
+                  size: "Small",
+                  iconScale: "h-4",
+                  volume: "250 ML",
+                },
+                {
+                  size: "Medium",
+                  iconScale: "h-6",
+                  volume: "350 ML",
+                },
+                {
+                  size: "Large",
+                  iconScale: "h-8",
+                  volume: "500 ML",
+                },
+              ].map((item) => {
+
+                const isSelected =
+                    cupSize === item.size;
+
+                return (
+                    <button
+                        key={item.size}
+                        onClick={() =>
+                            setCupSize(item.size)
+                        }
+                        className={`
+                    group
+                    relative
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    overflow-hidden
+                    rounded-xl
+                    border
+                    py-3
+                    transition-all
+                    duration-200
+                    ${
+                            isSelected
+                                ? `
+                          border-cyan-400/45
+                          bg-cyan-400/[0.09]
+                          text-cyan-300
+                          shadow-[0_0_18px_rgba(0,240,255,.12)]
+                        `
+                                : `
+                          border-white/[0.06]
+                          bg-white/[0.02]
+                          text-slate-500
+                          hover:border-cyan-400/20
+                          hover:bg-white/[0.04]
+                          hover:text-slate-300
+                        `
+                        }
+                  `}
+                    >
+
+                      {isSelected && (
+                          <div
+                              className="
+                        absolute
+                        right-1.5
+                        top-1.5
+                        flex
+                        h-4
+                        w-4
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-cyan-400
+                        text-[#031018]
+                      "
+                          >
+                            <Check size={9} strokeWidth={3} />
+                          </div>
+                      )}
+
+                      <div
+                          className={`
+                      mb-1
+                      w-4
+                      rounded-t-md
+                      rounded-b-sm
+                      border
+                      transition-all
+                      ${
+                              isSelected
+                                  ? "border-cyan-300 bg-cyan-400/10"
+                                  : "border-slate-600 bg-transparent"
+                          }
+                      ${item.iconScale}
+                    `}
+                      />
+
+                      <span
+                          className="
+                      text-[10px]
+                      font-extrabold
+                    "
+                      >
+                    {item.size}
+                  </span>
+
+                      <span
+                          className={`
+                      mt-0.5
+                      font-mono
+                      text-[7px]
+                      ${
+                              isSelected
+                                  ? "text-cyan-500"
+                                  : "text-slate-700"
+                          }
+                    `}
+                      >
+                    {item.volume}
+                  </span>
+
+                    </button>
+                );
+              })}
+
+            </div>
+          </div>
+
+          {/* ===================================================
+            EXTRA INGREDIENTS
+        =================================================== */}
+
+          <div>
+
+            <div className="mb-2 flex items-center gap-2">
+
+              <Sparkles
+                  size={13}
+                  className="text-purple-400"
+              />
+
+              <span
+                  className="
+                text-[10px]
+                font-bold
+                uppercase
+                tracking-wider
+                text-slate-300
+              "
+              >
+              Extra Ingredients
+            </span>
+
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+
+              {extraOptions.map((opt) => {
+
+                const isChecked =
+                    selectedExtras.some(
+                        (e) => e.name === opt.name
+                    );
+
+                return (
+                    <button
+                        key={opt.name}
+                        onClick={() => toggleExtra(opt)}
+                        className={`
+                    group
+                    flex
+                    items-center
+                    justify-between
+                    rounded-xl
+                    border
+                    p-2.5
+                    text-left
+                    transition-all
+                    duration-200
+                    ${
+                            isChecked
+                                ? `
+                          border-cyan-400/35
+                          bg-cyan-400/[0.07]
+                          shadow-[0_0_15px_rgba(0,240,255,.08)]
+                        `
+                                : `
+                          border-white/[0.06]
+                          bg-white/[0.02]
+                          hover:border-cyan-400/20
+                          hover:bg-white/[0.035]
+                        `
+                        }
+                  `}
+                    >
+
+                      <div>
+
+                    <span
+                        className={`
+                        block
+                        text-[9px]
+                        font-bold
+                        ${
+                            isChecked
+                                ? "text-cyan-300"
+                                : "text-slate-300"
+                        }
+                      `}
+                    >
+                      {opt.name}
+                    </span>
+
+                        <span
+                            className="
+                        mt-0.5
+                        block
+                        font-mono
+                        text-[8px]
+                        text-slate-600
+                      "
+                        >
+                      + LKR {opt.priceLkr}
+                    </span>
+
+                      </div>
+
+                      <div
+                          className={`
+                      flex
+                      h-6
+                      w-6
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-lg
+                      transition-all
+                      ${
+                              isChecked
+                                  ? `
+                            bg-cyan-400
+                            text-[#031018]
+                            shadow-[0_0_12px_rgba(0,240,255,.35)]
+                          `
+                                  : `
+                            border
+                            border-white/[0.08]
+                            bg-white/[0.03]
+                            text-slate-600
+                            group-hover:border-cyan-400/20
+                            group-hover:text-cyan-400
+                          `
+                          }
+                    `}
+                      >
+                        {isChecked ? (
+                            <Check
+                                size={12}
+                                strokeWidth={3}
+                            />
+                        ) : (
+                            <Plus size={12} />
+                        )}
+                      </div>
+
+                    </button>
+                );
+              })}
+
+            </div>
+          </div>
+
         </div>
-
-      </div>
-
-    </div>
+      </section>
   );
 };
