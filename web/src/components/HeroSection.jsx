@@ -1,447 +1,189 @@
 import React from "react";
 import {
-  ArrowRight,
+  ArrowUpRight,
   Cpu,
+  Droplets,
+  Gauge,
   ShieldCheck,
   Zap,
-  Sparkles,
 } from "lucide-react";
 
-export const HeroSection = ({ onStartOrdering }) => {
+export const HeroSection = ({
+                              onStartOrdering,
+                            }) => {
   return (
-      <section className="relative min-h-[390px] overflow-hidden">
+      <section
+          className="
+        relative
+        overflow-hidden
+        rounded-[32px]
+        border
+        border-black/10
+        bg-[#faf9f4]
+      "
+      >
 
-        {/* =====================================================
-          BACKGROUND LIGHT EFFECTS
-      ===================================================== */}
+        {/* GRID */}
+
+        <div className="tech-grid absolute inset-0 opacity-50" />
 
         <div
             className="
-          pointer-events-none
           absolute
-          -left-32
-          top-10
-          h-72
-          w-72
+          -right-20
+          -top-20
+          h-80
+          w-80
           rounded-full
-          bg-cyan-500/10
-          blur-[110px]
+          bg-[#f5c400]/20
+          blur-[100px]
         "
         />
 
-        <div
-            className="
-          pointer-events-none
-          absolute
-          right-20
-          top-0
-          h-96
-          w-96
-          rounded-full
-          bg-blue-600/10
-          blur-[130px]
-        "
-        />
-
-        <div
-            className="
-          pointer-events-none
-          absolute
-          bottom-[-150px]
-          left-1/2
-          h-72
-          w-72
-          -translate-x-1/2
-          rounded-full
-          bg-cyan-400/10
-          blur-[120px]
-        "
-        />
-
-        {/* Decorative grid */}
-
-        <div
-            className="
-          pointer-events-none
-          absolute
-          inset-0
-          opacity-[0.035]
-          [background-image:linear-gradient(rgba(0,240,255,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,.5)_1px,transparent_1px)]
-          [background-size:42px_42px]
-        "
-        />
-
-        {/* =====================================================
-          MAIN CONTENT
-      ===================================================== */}
 
         <div
             className="
           relative
           z-10
           grid
-          min-h-[390px]
+          min-h-[540px]
           grid-cols-1
-          items-center
+          gap-8
+          p-6
+          sm:p-10
           lg:grid-cols-12
+          lg:p-14
         "
         >
 
-          {/* ===================================================
-            LEFT CONTENT
-        =================================================== */}
+          {/* LEFT */}
 
           <div
               className="
-            relative
-            z-20
             flex
             flex-col
             justify-center
-            px-6
-            py-10
-            sm:px-8
-            lg:col-span-6
-            lg:px-10
-            lg:py-8
-            xl:col-span-5
+            lg:col-span-7
           "
           >
 
-            {/* Status badge */}
+            <div className="mb-5 flex items-center gap-2">
 
-            <div
-                className="
-              mb-5
-              flex
-              w-fit
-              items-center
-              gap-2
-              rounded-full
-              border
-              border-green-400/20
-              bg-green-400/[0.05]
-              px-3
-              py-1.5
-              backdrop-blur-xl
-            "
-            >
-            <span
-                className="
-                h-1.5
-                w-1.5
-                animate-pulse
-                rounded-full
-                bg-green-400
-                shadow-[0_0_10px_rgba(0,255,136,.9)]
-              "
-            />
-
-              <span
-                  className="
-                text-[9px]
-                font-bold
-                uppercase
-                tracking-[0.18em]
-                text-green-400
-              "
-              >
-              Smart Beverage System
+            <span className="badge-yellow">
+              <Zap size={10} />
+              SMART DISPENSING PLATFORM
             </span>
-
-              <span className="text-slate-700">•</span>
 
               <span className="font-mono text-[8px] text-slate-500">
-              ESP32 PRO
+              V2.0
             </span>
+
             </div>
 
-
-            {/* Main heading */}
 
             <h1
                 className="
-              max-w-[620px]
-              font-[Outfit]
-              text-4xl
-              font-black
-              uppercase
-              leading-[0.94]
-              tracking-[-0.04em]
-              text-white
-              sm:text-5xl
-              lg:text-[52px]
-              xl:text-[60px]
+              max-w-4xl
+              font-[Space_Grotesk]
+              text-[clamp(3rem,7vw,7rem)]
+              font-bold
+              leading-[0.86]
+              tracking-[-0.075em]
+              text-black
             "
             >
-              Smart
+              YOUR DRINK.
+              <br />
 
               <span
                   className="
-                block
-                bg-gradient-to-r
-                from-cyan-300
-                via-cyan-400
-                to-blue-500
-                bg-clip-text
-                text-transparent
-                drop-shadow-[0_0_20px_rgba(0,210,255,.18)]
+                inline-block
+                text-[#e6392f]
               "
               >
-              Robotic
+              PRECISION.
             </span>
 
-              <span className="block">
-              Bartender
-            </span>
+              <br />
+
+              AUTOMATED.
             </h1>
 
 
-            {/* Description */}
-
             <p
                 className="
-              mt-5
-              max-w-[520px]
-              text-xs
-              font-medium
+              mt-7
+              max-w-xl
+              text-sm
               leading-6
-              text-slate-400
-              sm:text-sm
+              text-slate-600
+              sm:text-base
             "
             >
-              Order premium beverages with a single tap.
-              Precision liquid dispensing, intelligent cup
-              detection and automated mixing for a flawless
-              drink every time.
+              Bevera 360 is an intelligent robotic beverage
+              dispensing system designed for accurate,
+              hygienic and automated drink preparation.
             </p>
 
 
-            {/* CTA */}
-
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
 
               <button
                   onClick={onStartOrdering}
-                  className="
-                group
-                relative
-                flex
-                items-center
-                gap-3
-                overflow-hidden
-                rounded-xl
-                border
-                border-cyan-300/50
-                bg-gradient-to-r
-                from-cyan-400
-                to-blue-500
-                px-5
-                py-3
-                text-xs
-                font-black
-                text-[#031018]
-                shadow-[0_0_25px_rgba(0,210,255,.35)]
-                transition-all
-                duration-300
-                hover:-translate-y-0.5
-                hover:shadow-[0_0_40px_rgba(0,210,255,.6)]
-                active:translate-y-0
-              "
+                  className="btn-modern-yellow"
               >
-
-              <span
-                  className="
-                  absolute
-                  inset-0
-                  -translate-x-full
-                  bg-gradient-to-r
-                  from-transparent
-                  via-white/30
-                  to-transparent
-                  transition-transform
-                  duration-700
-                  group-hover:translate-x-full
-                "
-              />
-
-                <span className="relative">
                 Start Ordering
-              </span>
 
-                <ArrowRight
-                    size={16}
-                    className="
-                  relative
-                  transition-transform
-                  duration-300
-                  group-hover:translate-x-1
-                "
-                />
-
+                <ArrowUpRight size={15} />
               </button>
 
-
-              {/* Secondary button */}
-
               <button
-                  onClick={onStartOrdering}
-                  className="
-                flex
-                items-center
-                gap-2
-                rounded-xl
-                border
-                border-white/10
-                bg-white/[0.035]
-                px-4
-                py-3
-                text-xs
-                font-semibold
-                text-slate-300
-                backdrop-blur-xl
-                transition-all
-                duration-200
-                hover:border-cyan-400/25
-                hover:bg-cyan-400/[0.05]
-                hover:text-white
-              "
+                  className="btn-modern-black"
+                  onClick={() =>
+                      document
+                          .getElementById("system-overview")
+                          ?.scrollIntoView({
+                            behavior: "smooth",
+                          })
+                  }
               >
-                <Sparkles
-                    size={14}
-                    className="text-cyan-400"
-                />
-
-                Explore Drinks
+                Explore System
               </button>
 
             </div>
 
 
-            {/* =================================================
-              FEATURE MINI CARDS
-          ================================================= */}
+            {/* METRICS */}
 
-            <div
-                className="
-              mt-7
-              grid
-              max-w-[560px]
-              grid-cols-3
-              gap-2
-            "
-            >
+            <div className="mt-10 grid max-w-xl grid-cols-3 border-t border-black/10 pt-5">
 
-              {/* Feature 1 */}
-
-              <div
-                  className="
-                rounded-xl
-                border
-                border-white/[0.07]
-                bg-white/[0.025]
-                p-3
-                backdrop-blur-xl
-                transition-all
-                hover:border-cyan-400/20
-                hover:bg-cyan-400/[0.035]
-              "
-              >
-                <Cpu
-                    size={15}
-                    className="mb-2 text-cyan-400"
-                />
-
-                <p
-                    className="
-                  text-[9px]
-                  font-bold
-                  uppercase
-                  tracking-wider
-                  text-white
-                "
-                >
-                  ESP32 Control
+              <div>
+                <p className="font-mono text-[8px] text-slate-500">
+                  CHANNELS
                 </p>
 
-                <p className="mt-1 text-[8px] text-slate-500">
-                  Real-time telemetry
+                <p className="mt-1 font-[Space_Grotesk] text-xl font-bold">
+                  05
                 </p>
               </div>
 
-
-              {/* Feature 2 */}
-
-              <div
-                  className="
-                rounded-xl
-                border
-                border-white/[0.07]
-                bg-white/[0.025]
-                p-3
-                backdrop-blur-xl
-                transition-all
-                hover:border-green-400/20
-                hover:bg-green-400/[0.035]
-              "
-              >
-                <ShieldCheck
-                    size={15}
-                    className="mb-2 text-green-400"
-                />
-
-                <p
-                    className="
-                  text-[9px]
-                  font-bold
-                  uppercase
-                  tracking-wider
-                  text-white
-                "
-                >
-                  Cup Safety
+              <div className="border-l border-black/10 pl-4">
+                <p className="font-mono text-[8px] text-slate-500">
+                  CONTROL
                 </p>
 
-                <p className="mt-1 text-[8px] text-slate-500">
-                  IR detection active
+                <p className="mt-1 font-[Space_Grotesk] text-xl font-bold">
+                  ESP32
                 </p>
               </div>
 
-
-              {/* Feature 3 */}
-
-              <div
-                  className="
-                rounded-xl
-                border
-                border-white/[0.07]
-                bg-white/[0.025]
-                p-3
-                backdrop-blur-xl
-                transition-all
-                hover:border-blue-400/20
-                hover:bg-blue-400/[0.035]
-              "
-              >
-                <Zap
-                    size={15}
-                    className="mb-2 text-blue-400"
-                />
-
-                <p
-                    className="
-                  text-[9px]
-                  font-bold
-                  uppercase
-                  tracking-wider
-                  text-white
-                "
-                >
-                  Precision Flow
+              <div className="border-l border-black/10 pl-4">
+                <p className="font-mono text-[8px] text-slate-500">
+                  ACCURACY
                 </p>
 
-                <p className="mt-1 text-[8px] text-slate-500">
-                  Accurate dispensing
+                <p className="mt-1 font-[Space_Grotesk] text-xl font-bold">
+                  ML
                 </p>
               </div>
 
@@ -450,236 +192,129 @@ export const HeroSection = ({ onStartOrdering }) => {
           </div>
 
 
-          {/* ===================================================
-            ROBOT MACHINE
-        =================================================== */}
+          {/* RIGHT MACHINE */}
 
           <div
               className="
-            relative
             flex
-            min-h-[390px]
             items-center
             justify-center
-            lg:col-span-6
-            lg:min-h-[390px]
-            xl:col-span-7
+            lg:col-span-5
           "
           >
 
-            {/* Machine spotlight */}
+            <div className="machine-frame relative w-full max-w-[470px] p-5">
 
-            <div
-                className="
-              pointer-events-none
-              absolute
-              left-1/2
-              top-1/2
-              h-[310px]
-              w-[310px]
-              -translate-x-1/2
-              -translate-y-1/2
-              rounded-full
-              bg-cyan-400/10
-              blur-[70px]
-            "
-            />
+              {/* Top labels */}
 
-
-            {/* Floor glow */}
-
-            <div
-                className="
-              pointer-events-none
-              absolute
-              bottom-10
-              left-1/2
-              h-8
-              w-[280px]
-              -translate-x-1/2
-              rounded-[50%]
-              bg-cyan-400/20
-              blur-[25px]
-            "
-            />
-
-
-            {/* Decorative circles */}
-
-            <div
-                className="
-              pointer-events-none
-              absolute
-              h-[310px]
-              w-[310px]
-              rounded-full
-              border
-              border-cyan-400/[0.07]
-            "
-            />
-
-            <div
-                className="
-              pointer-events-none
-              absolute
-              h-[250px]
-              w-[250px]
-              rounded-full
-              border
-              border-cyan-400/[0.05]
-            "
-            />
-
-
-            {/* Robot image */}
-
-            <div
-                className="
-              relative
-              z-10
-              flex
-              h-full
-              w-full
-              items-center
-              justify-center
-            "
-            >
-
-              <img
-                  src="/images/robo_machine.png"
-                  alt="Smart Robotic Bartender Machine"
+              <div
                   className="
-                relative
+                absolute
+                left-5
+                top-5
                 z-20
-                h-[340px]
-                w-[340px]
-                max-w-[90%]
-                object-contain
-                drop-shadow-[0_20px_35px_rgba(0,0,0,.8)]
-                drop-shadow-[0_0_30px_rgba(0,210,255,.25)]
-                transition-transform
-                duration-700
-                hover:scale-[1.04]
+                flex
+                items-center
+                gap-2
               "
-              />
-
-            </div>
-
-
-            {/* =================================================
-              FLOATING STATUS CARD - TOP RIGHT
-          ================================================= */}
-
-            <div
-                className="
-              absolute
-              right-4
-              top-12
-              z-30
-              hidden
-              w-[145px]
-              rounded-2xl
-              border
-              border-white/[0.09]
-              bg-[#08111e]/80
-              p-3
-              shadow-[0_15px_40px_rgba(0,0,0,.5)]
-              backdrop-blur-xl
-              sm:block
-              lg:right-5
-              xl:right-10
-            "
-            >
-
-              <div className="flex items-center gap-2">
-
-                <div
-                    className="
-                  flex
-                  h-7
-                  w-7
-                  items-center
-                  justify-center
-                  rounded-lg
-                  bg-green-400/10
-                  text-green-400
-                "
-                >
-                  <Cpu size={13} />
-                </div>
-
-                <div>
-
-                  <p className="text-[8px] text-slate-500">
-                    MACHINE STATUS
-                  </p>
-
-                  <p className="text-[10px] font-bold text-green-400">
-                    ONLINE
-                  </p>
-
-                </div>
-
+              >
+              <span className="badge-black">
+                <Cpu size={9} />
+                ROBOT UNIT
+              </span>
               </div>
 
-              <div className="mt-3 h-px bg-white/[0.06]" />
 
-              <div className="mt-2 flex items-center justify-between">
-
-              <span className="text-[8px] text-slate-500">
-                Temperature
-              </span>
-
-                <span className="font-mono text-[9px] text-white">
-                32°C
-              </span>
-
-              </div>
-
-            </div>
-
-
-            {/* =================================================
-              FLOATING CARD - BOTTOM
-          ================================================= */}
-
-            <div
-                className="
-              absolute
-              bottom-8
-              left-4
-              z-30
-              hidden
-              rounded-2xl
-              border
-              border-cyan-400/10
-              bg-[#08111e]/80
-              px-3
-              py-2.5
-              shadow-[0_15px_40px_rgba(0,0,0,.5)]
-              backdrop-blur-xl
-              sm:block
-              lg:left-3
-              xl:left-10
-            "
-            >
-
-              <div className="flex items-center gap-2">
-
-              <span
+              <div
                   className="
-                  h-2
-                  w-2
-                  animate-pulse
-                  rounded-full
-                  bg-cyan-400
-                  shadow-[0_0_10px_#00f0ff]
-                "
-              />
-
-                <span className="text-[9px] font-semibold text-slate-300">
-                5 Channel Dispensing
+                absolute
+                right-5
+                top-5
+                z-20
+              "
+              >
+              <span className="badge-red">
+                LIVE
               </span>
+              </div>
+
+
+              <div
+                  className="
+                flex
+                min-h-[390px]
+                items-center
+                justify-center
+              "
+              >
+
+                <img
+                    src="/images/robo_machine.png"
+                    alt="Bevera 360 robotic bartender"
+                    className="
+                  animate-machine
+                  relative
+                  z-10
+                  max-h-[390px]
+                  w-full
+                  object-contain
+                  drop-shadow-[0_25px_35px_rgba(0,0,0,.18)]
+                "
+                />
+
+              </div>
+
+
+              {/* Bottom data */}
+
+              <div
+                  className="
+                absolute
+                bottom-5
+                left-5
+                right-5
+                z-20
+                grid
+                grid-cols-3
+                gap-2
+              "
+              >
+
+                <div className="rounded-xl bg-black p-2.5 text-white">
+                  <Droplets size={13} className="text-[#f5c400]" />
+
+                  <p className="mt-2 font-mono text-[7px] text-white/50">
+                    FLOW
+                  </p>
+
+                  <p className="font-mono text-[9px] font-bold">
+                    ACTIVE
+                  </p>
+                </div>
+
+                <div className="rounded-xl bg-[#f5c400] p-2.5 text-black">
+                  <Gauge size={13} />
+
+                  <p className="mt-2 font-mono text-[7px] opacity-50">
+                    PRECISION
+                  </p>
+
+                  <p className="font-mono text-[9px] font-bold">
+                    READY
+                  </p>
+                </div>
+
+                <div className="rounded-xl bg-white p-2.5 text-black">
+                  <ShieldCheck size={13} />
+
+                  <p className="mt-2 font-mono text-[7px] text-slate-500">
+                    SAFETY
+                  </p>
+
+                  <p className="font-mono text-[9px] font-bold">
+                    SECURE
+                  </p>
+                </div>
 
               </div>
 
@@ -688,24 +323,6 @@ export const HeroSection = ({ onStartOrdering }) => {
           </div>
 
         </div>
-
-
-        {/* Bottom divider */}
-
-        <div
-            className="
-          absolute
-          bottom-0
-          left-6
-          right-6
-          h-px
-          bg-gradient-to-r
-          from-transparent
-          via-cyan-400/15
-          to-transparent
-        "
-        />
-
       </section>
   );
 };

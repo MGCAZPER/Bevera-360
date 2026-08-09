@@ -2,13 +2,11 @@ import React from "react";
 import {
   Bot,
   Wifi,
-  User,
-  ChevronDown,
-  Presentation,
-  Sliders,
-  Cpu,
-  Activity,
   Settings2,
+  Activity,
+  Cpu,
+  Presentation,
+  SlidersHorizontal,
 } from "lucide-react";
 
 import { useBartender } from "../context/BartenderContext";
@@ -22,31 +20,26 @@ export const Header = () => {
     setHardwareMode,
   } = useBartender();
 
-  const isHome =
-      activeScreen === "main" ||
-      activeScreen === "preparation" ||
-      activeScreen === "completion";
-
-  const navButton = (active = false) =>
-      `
-      relative
-      flex
-      items-center
-      gap-1.5
-      rounded-xl
-      px-3
-      py-2
-      text-[11px]
-      font-semibold
-      whitespace-nowrap
-      transition-all
-      duration-200
-      ${
-          active
-              ? "bg-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,.06)]"
-              : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
-      }
-    `;
+  const navItem = (screen, label) => (
+      <button
+          onClick={() => setActiveScreen(screen)}
+          className={`
+        rounded-full
+        px-3
+        py-2
+        text-[10px]
+        font-bold
+        transition-all
+        ${
+              activeScreen === screen
+                  ? "bg-black text-white"
+                  : "text-slate-600 hover:bg-black/5 hover:text-black"
+          }
+      `}
+      >
+        {label}
+      </button>
+  );
 
   return (
       <header
@@ -54,268 +47,115 @@ export const Header = () => {
         sticky
         top-0
         z-50
-        w-full
         border-b
-        border-white/[0.07]
-        bg-[#030711]/85
-        backdrop-blur-2xl
+        border-black/10
+        bg-[#f4f1e8]/90
+        backdrop-blur-xl
       "
       >
-        {/* Top cyan line */}
-        <div
-            className="
-          absolute
-          left-0
-          right-0
-          top-0
-          h-px
-          bg-gradient-to-r
-          from-transparent
-          via-cyan-400/60
-          to-transparent
-        "
-        />
-
         <div
             className="
           mx-auto
           flex
-          min-h-[70px]
+          min-h-[72px]
           max-w-[1720px]
           items-center
+          justify-between
           gap-4
           px-4
-          lg:px-6
-          xl:px-8
+          lg:px-8
         "
         >
-          {/* =================================================
-            BRAND
-        ================================================= */}
+
+          {/* BRAND */}
 
           <button
               onClick={() => setActiveScreen("main")}
               className="
-            group
             flex
-            min-w-fit
             items-center
             gap-3
-            outline-none
+            text-left
           "
           >
-            {/* Robot Icon */}
+
             <div
                 className="
-              relative
               flex
               h-10
               w-10
               items-center
               justify-center
               rounded-xl
-              border
-              border-cyan-400/25
-              bg-gradient-to-br
-              from-cyan-400/15
-              to-blue-500/5
-              text-cyan-400
-              shadow-[0_0_25px_rgba(0,240,255,.12)]
-              transition-all
-              duration-300
-              group-hover:border-cyan-400/50
-              group-hover:shadow-[0_0_30px_rgba(0,240,255,.25)]
+              bg-black
+              text-[#f5c400]
             "
             >
-              <Bot
-                  size={21}
-                  strokeWidth={1.8}
-                  className="
-                transition-transform
-                duration-300
-                group-hover:scale-110
-              "
-              />
-
-              {/* Online indicator */}
-              <span
-                  className="
-                absolute
-                -right-0.5
-                -top-0.5
-                h-2.5
-                w-2.5
-                rounded-full
-                border-2
-                border-[#030711]
-                bg-green-400
-                shadow-[0_0_10px_rgba(0,255,136,.8)]
-              "
-              />
+              <Bot size={21} />
             </div>
 
-            {/* Brand text */}
-            <div className="hidden sm:block text-left">
+            <div className="hidden sm:block">
+
               <div
                   className="
-                font-[Outfit]
-                text-[13px]
-                font-extrabold
-                uppercase
-                leading-none
-                tracking-[0.08em]
-                text-white
+                font-[Space_Grotesk]
+                text-sm
+                font-bold
+                tracking-tight
               "
               >
-                Robotic
+                BEVERA<span className="text-[#e6392f]">.</span>360
               </div>
 
               <div
                   className="
-                mt-0.5
-                font-[Outfit]
-                text-[13px]
-                font-extrabold
+                font-mono
+                text-[7px]
                 uppercase
-                leading-none
-                tracking-[0.08em]
-                text-cyan-400
+                tracking-[0.18em]
+                text-slate-500
               "
               >
-                Bartender
+                Smart Beverage System
               </div>
+
             </div>
+
           </button>
 
 
-          {/* =================================================
-            MAIN NAVIGATION
-        ================================================= */}
+          {/* NAVIGATION */}
 
           <nav
               className="
-            mx-auto
             hidden
             items-center
-            rounded-2xl
+            gap-1
+            rounded-full
             border
-            border-white/[0.07]
-            bg-white/[0.025]
+            border-black/10
+            bg-white/50
             p-1
             lg:flex
           "
           >
-            {/* Home */}
+            {navItem("main", "Overview")}
 
-            <button
-                onClick={() => setActiveScreen("main")}
-                className={navButton(isHome)}
-            >
-              Home
-            </button>
+            {navItem("admin", "System")}
 
+            {navItem("calibration", "Calibration")}
 
-            {/* Drinks */}
+            {navItem("diagnostics", "Diagnostics")}
 
-            <button
-                onClick={() => setActiveScreen("main")}
-                className={navButton(activeScreen === "main")}
-            >
-              Drinks
-            </button>
-
-
-            {/* Orders */}
-
-            <button
-                onClick={() => setActiveScreen("main")}
-                className={navButton(false)}
-            >
-              Orders
-            </button>
-
-
-            {/* Status */}
-
-            <button
-                onClick={() => setActiveScreen("admin")}
-                className={navButton(activeScreen === "admin")}
-            >
-              Status
-            </button>
-
-
-            {/* Calibration */}
-
-            <button
-                onClick={() => setActiveScreen("calibration")}
-                className={navButton(activeScreen === "calibration")}
-            >
-              <Sliders
-                  size={13}
-                  className={
-                    activeScreen === "calibration"
-                        ? "text-cyan-400"
-                        : "text-slate-500"
-                  }
-              />
-
-              Calibration
-            </button>
-
-
-            {/* Diagnostics */}
-
-            <button
-                onClick={() => setActiveScreen("diagnostics")}
-                className={navButton(activeScreen === "diagnostics")}
-            >
-              <Cpu
-                  size={13}
-                  className={
-                    activeScreen === "diagnostics"
-                        ? "text-cyan-400"
-                        : "text-slate-500"
-                  }
-              />
-
-              Hardware
-            </button>
-
-
-            {/* Figma */}
-
-            <button
-                onClick={() => setActiveScreen("figma_board")}
-                className={navButton(activeScreen === "figma_board")}
-            >
-              <Presentation
-                  size={13}
-                  className={
-                    activeScreen === "figma_board"
-                        ? "text-purple-400"
-                        : "text-slate-500"
-                  }
-              />
-
-              Canvas
-            </button>
+            {navItem("figma_board", "Canvas")}
           </nav>
 
 
-          {/* =================================================
-            RIGHT SIDE CONTROLS
-        ================================================= */}
+          {/* RIGHT */}
 
-          <div
-              className="
-            ml-auto
-            flex
-            items-center
-            gap-2
-          "
-          >
-            {/* ESP32 Mode */}
+          <div className="flex items-center gap-2">
+
+            {/* Hardware */}
 
             <button
                 onClick={() =>
@@ -325,303 +165,74 @@ export const Header = () => {
                             : "LIVE_ESP32"
                     )
                 }
-                title="Toggle ESP32 hardware / simulation mode"
                 className="
               hidden
               items-center
               gap-2
-              rounded-xl
+              rounded-full
               border
+              border-black/10
+              bg-white/60
               px-3
               py-2
-              text-[9px]
-              font-black
-              uppercase
-              tracking-wider
-              transition-all
-              duration-200
-              md:flex
+              sm:flex
             "
-                style={{
-                  borderColor:
-                      hardwareMode === "LIVE_ESP32"
-                          ? "rgba(0,240,255,.25)"
-                          : "rgba(245,158,11,.25)",
-
-                  background:
-                      hardwareMode === "LIVE_ESP32"
-                          ? "rgba(0,240,255,.05)"
-                          : "rgba(245,158,11,.05)",
-
-                  color:
-                      hardwareMode === "LIVE_ESP32"
-                          ? "#67e8f9"
-                          : "#fbbf24",
-                }}
             >
-              <Activity size={12} />
 
+              <Cpu size={12} />
+
+              <span className="font-mono text-[8px] font-bold">
               {hardwareMode === "LIVE_ESP32"
                   ? "ESP32 LIVE"
-                  : "DEMO MODE"}
+                  : "DEMO"}
+            </span>
+
             </button>
 
 
-            {/* Machine Status */}
+            {/* Connection */}
 
             <div
-                className="
-              hidden
-              items-center
-              gap-2
-              rounded-xl
-              border
-              border-green-400/15
-              bg-green-400/[0.045]
-              px-3
-              py-2
-              sm:flex
-            "
-            >
-            <span className="relative flex h-2 w-2">
-
-              <span
-                  className={`
-                  absolute
-                  inline-flex
-                  h-full
-                  w-full
-                  rounded-full
-                  opacity-60
-                  ${
-                      esp32Connected
-                          ? "animate-ping bg-green-400"
-                          : "bg-amber-400"
-                  }
-                `}
-              />
-
-              <span
-                  className={`
-                  relative
-                  inline-flex
-                  h-2
-                  w-2
-                  rounded-full
-                  ${
-                      esp32Connected
-                          ? "bg-green-400"
-                          : "bg-amber-400"
-                  }
-                `}
-              />
-
-            </span>
-
-              <span
-                  className={`
-                text-[9px]
-                font-black
-                uppercase
-                tracking-[0.12em]
-                ${
-                      esp32Connected
-                          ? "text-green-400"
-                          : "text-amber-400"
-                  }
-              `}
-              >
-              {esp32Connected ? "ONLINE" : "CONNECTING"}
-            </span>
-            </div>
-
-
-            {/* WiFi */}
-
-            <div
-                className="
-              hidden
-              h-9
-              w-9
-              items-center
-              justify-center
-              rounded-xl
-              border
-              border-white/[0.07]
-              bg-white/[0.03]
-              text-green-400
-              transition-all
-              hover:border-green-400/25
-              hover:bg-green-400/[0.06]
-              sm:flex
-            "
-            >
-              <Wifi size={16} />
-            </div>
-
-
-            {/* Settings */}
-
-            <button
-                className="
-              hidden
-              h-9
-              w-9
-              items-center
-              justify-center
-              rounded-xl
-              border
-              border-white/[0.07]
-              bg-white/[0.03]
-              text-slate-400
-              transition-all
-              hover:border-cyan-400/25
-              hover:bg-cyan-400/[0.06]
-              hover:text-cyan-400
-              md:flex
-            "
-            >
-              <Settings2 size={15} />
-            </button>
-
-
-            {/* Admin */}
-
-            <button
                 className="
               flex
               items-center
               gap-2
-              rounded-xl
-              border
-              border-white/[0.08]
-              bg-white/[0.035]
-              px-2
-              py-1.5
-              transition-all
-              hover:border-cyan-400/20
-              hover:bg-white/[0.055]
+              rounded-full
+              bg-black
+              px-3
+              py-2
+              text-white
             "
             >
 
-              <div
+            <span
+                className={
+                  esp32Connected
+                      ? "status-online"
+                      : "status-warning"
+                }
+            />
+
+              <span
                   className="
-                flex
-                h-7
-                w-7
-                items-center
-                justify-center
-                rounded-lg
-                bg-gradient-to-br
-                from-slate-500
-                to-slate-800
-                text-white
-                shadow-inner
+                hidden
+                font-mono
+                text-[8px]
+                font-bold
+                uppercase
+                sm:block
               "
               >
-                <User size={14} />
-              </div>
+              {esp32Connected
+                  ? "Online"
+                  : "Connecting"}
+            </span>
 
-              <div className="hidden text-left sm:block">
-
-                <p
-                    className="
-                  text-[10px]
-                  font-bold
-                  leading-none
-                  text-white
-                "
-                >
-                  Admin
-                </p>
-
-                <p
-                    className="
-                  mt-1
-                  text-[8px]
-                  leading-none
-                  text-slate-500
-                "
-                >
-                  System Manager
-                </p>
-
-              </div>
-
-              <ChevronDown
-                  size={12}
-                  className="hidden text-slate-500 sm:block"
-              />
-
-            </button>
+            </div>
 
           </div>
 
         </div>
-
-
-        {/* =================================================
-          MOBILE NAVIGATION
-      ================================================= */}
-
-        <div
-            className="
-          flex
-          overflow-x-auto
-          border-t
-          border-white/[0.05]
-          bg-black/10
-          px-3
-          py-2
-          lg:hidden
-          [scrollbar-width:none]
-          [&::-webkit-scrollbar]:hidden
-        "
-        >
-
-          <div className="mx-auto flex gap-1">
-
-            <button
-                onClick={() => setActiveScreen("main")}
-                className={navButton(isHome)}
-            >
-              Home
-            </button>
-
-            <button
-                onClick={() => setActiveScreen("main")}
-                className={navButton(false)}
-            >
-              Drinks
-            </button>
-
-            <button
-                onClick={() => setActiveScreen("admin")}
-                className={navButton(activeScreen === "admin")}
-            >
-              Status
-            </button>
-
-            <button
-                onClick={() => setActiveScreen("calibration")}
-                className={navButton(activeScreen === "calibration")}
-            >
-              <Sliders size={12} />
-              Calibration
-            </button>
-
-            <button
-                onClick={() => setActiveScreen("diagnostics")}
-                className={navButton(activeScreen === "diagnostics")}
-            >
-              <Cpu size={12} />
-              Hardware
-            </button>
-
-          </div>
-
-        </div>
-
       </header>
   );
 };
