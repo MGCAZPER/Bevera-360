@@ -31,8 +31,8 @@ function AppContent() {
       {/* Header Bar */}
       <Header />
 
-      {/* Main Container Viewport */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+      {/* Main Container Viewport (Optimized for 1920x1080 Full HD Screen) */}
+      <main className="flex-1 max-w-[1720px] w-full mx-auto px-4 lg:px-6 py-4 space-y-4">
         {activeScreen === 'figma_board' ? (
           <FigmaBoard />
         ) : activeScreen === 'admin' ? (
@@ -72,8 +72,8 @@ function AppContent() {
       <MobileBottomNav />
 
       {/* Futuristic SaaS Footer */}
-      <footer className="border-t border-cyan-500/15 bg-[#04060d] py-6 px-4 text-xs text-slate-400 mt-12 mb-16 md:mb-0">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-cyan-500/15 bg-[#04060d] py-4 px-4 text-xs text-slate-400 mt-6 mb-16 md:mb-0">
+        <div className="max-w-[1720px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Bot size={18} className="text-[#00f0ff]" />
             <span className="font-black text-white">ROBOTIC <span className="text-gradient-cyan">BARTENDER</span></span>
