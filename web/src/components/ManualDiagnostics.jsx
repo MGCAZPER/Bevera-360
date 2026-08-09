@@ -36,20 +36,21 @@ export const ManualDiagnostics = () => {
   };
 
   return (
-    <div className="space-y-8 pb-16">
+    <div className="space-y-6 pb-16">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-            <Cpu className="text-cyan-400" /> Hardware Diagnostic Test Bench
+          <span className="badge-black">HARDWARE BENCH</span>
+          <h2 className="text-2xl font-black text-[#111] tracking-tight flex items-center gap-2 mt-1">
+            <Cpu className="text-[#f5c400]" size={22} /> Hardware Diagnostic Test Bench
           </h2>
-          <p className="text-slate-400 text-sm">Direct manual pin control for Relays, Stirrer Motor, IR Sensor, and LCD Module</p>
+          <p className="text-[#77756e] text-xs">Direct manual pin control for Relays, Stirrer Motor, IR Sensor, and LCD Module</p>
         </div>
 
         <button
           onClick={turnOffAll}
-          className="btn btn-danger flex items-center gap-2"
+          className="btn-modern-red flex items-center gap-2"
         >
           <Power size={16} />
           <span>EMERGENCY SHUTOFF</span>
@@ -60,12 +61,12 @@ export const ManualDiagnostics = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* 5-Channel Relay Module Direct Controls */}
-        <div className="glass-panel p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Power className="text-cyan-400" size={18} /> 5-Channel Relay Switches
+        <div className="modern-card p-6 bg-white space-y-4">
+          <div className="flex items-center justify-between border-b border-black/10 pb-3">
+            <h3 className="text-base font-bold text-[#111] flex items-center gap-2">
+              <Power className="text-[#f5c400]" size={18} /> 5-Channel Relay Switches
             </h3>
-            <span className="badge badge-purple">Active LOW</span>
+            <span className="badge-black">Active LOW</span>
           </div>
 
           <div className="space-y-3">
@@ -77,27 +78,27 @@ export const ManualDiagnostics = () => {
                 <div
                   key={tank.id}
                   className={`p-3.5 rounded-2xl border flex items-center justify-between transition-all ${
-                    isOn ? 'bg-cyan-950/40 border-cyan-400 shadow-md shadow-cyan-500/20' : 'bg-slate-900/60 border-slate-800'
+                    isOn ? 'bg-[#f5c400]/20 border-[#f5c400] shadow-sm' : 'bg-[#f4f1e8] border-black/10'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className={`p-2 rounded-xl ${
-                        isOn ? 'bg-cyan-500 text-slate-950 animate-bounce' : 'bg-slate-800 text-slate-500'
+                        isOn ? 'bg-black text-[#f5c400] animate-bounce' : 'bg-white text-[#77756e] border border-black/10'
                       }`}
                     >
                       <Droplet size={18} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-white text-sm">Relay {idx + 1}: Pump {idx + 1}</h4>
-                      <p className="text-xs text-slate-400">{tank.name}</p>
+                      <h4 className="font-bold text-[#111] text-sm">Relay {idx + 1}: Pump {idx + 1}</h4>
+                      <p className="text-xs text-[#77756e]">{tank.name}</p>
                     </div>
                   </div>
 
                   <button
                     onClick={() => toggleRelay(key)}
                     className={`btn px-4 py-1.5 text-xs ${
-                      isOn ? 'bg-cyan-400 text-slate-950 font-black' : 'btn-secondary'
+                      isOn ? 'bg-black text-[#f5c400] font-black rounded-full' : 'btn-modern-black text-xs'
                     }`}
                   >
                     {isOn ? 'ON (ACTIVE)' : 'OFF'}
@@ -106,65 +107,65 @@ export const ManualDiagnostics = () => {
               );
             })}
 
-            {/* Stirrer Motor Relay */}
+            {/* Stirrer Relay */}
             <div
               className={`p-3.5 rounded-2xl border flex items-center justify-between transition-all ${
-                relayStates.stirrer ? 'bg-purple-950/40 border-purple-400 shadow-md shadow-purple-500/20' : 'bg-slate-900/60 border-slate-800'
+                relayStates.stirrer ? 'bg-[#8b5cf6]/20 border-[#8b5cf6] shadow-sm' : 'bg-[#f4f1e8] border-black/10'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`p-2 rounded-xl ${
-                    relayStates.stirrer ? 'bg-purple-500 text-white animate-spin' : 'bg-slate-800 text-slate-500'
+                    relayStates.stirrer ? 'bg-[#8b5cf6] text-white animate-spin' : 'bg-white text-[#77756e] border border-black/10'
                   }`}
                 >
                   <RotateCw size={18} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-white text-sm">Relay 6: Stirrer Motor</h4>
-                  <p className="text-xs text-slate-400">12V DC Gear Motor Mixing Blade</p>
+                  <h4 className="font-bold text-[#111] text-sm">Relay 6: Stirrer Motor</h4>
+                  <p className="text-xs text-[#77756e]">12V DC Magnetic Stirrer</p>
                 </div>
               </div>
 
               <button
                 onClick={() => toggleRelay('stirrer')}
                 className={`btn px-4 py-1.5 text-xs ${
-                  relayStates.stirrer ? 'bg-purple-500 text-white font-black' : 'btn-secondary'
+                  relayStates.stirrer ? 'bg-black text-white font-black rounded-full' : 'btn-modern-black text-xs'
                 }`}
               >
-                {relayStates.stirrer ? 'ON (SPINNING)' : 'OFF'}
+                {relayStates.stirrer ? 'ON (ACTIVE)' : 'OFF'}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Display & Sensor Diagnostics */}
+        {/* IR Sensor & LCD simulator column */}
         <div className="space-y-6">
           
-          {/* IR Cup Proximity Sensor */}
-          <div className="glass-panel p-6 space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <ShieldCheck className="text-cyan-400" size={18} /> IR Cup Sensor Diagnostics
+          {/* IR Cup Sensor Diagnostics */}
+          <div className="modern-card p-6 bg-white space-y-4">
+            <h3 className="text-base font-bold text-[#111] flex items-center gap-2 border-b border-black/10 pb-3">
+              <ShieldCheck className="text-[#f5c400]" size={18} /> IR Cup Sensor Interlock (GPIO 4)
             </h3>
 
-            <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
+            <div className="bg-[#f4f1e8] p-4 rounded-2xl border border-black/10 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {cupDetected ? (
-                  <ShieldCheck size={28} className="text-emerald-400" />
+                  <ShieldCheck size={28} className="text-[#159447]" />
                 ) : (
-                  <ShieldAlert size={28} className="text-rose-400 animate-bounce" />
+                  <ShieldAlert size={28} className="text-[#e6392f] animate-bounce" />
                 )}
                 <div>
-                  <h4 className="font-bold text-white text-sm">
+                  <h4 className="font-bold text-[#111] text-sm">
                     {cupDetected ? 'CUP PRESENT (LOW)' : 'NO CUP DETECTED (HIGH)'}
                   </h4>
-                  <p className="text-xs text-slate-400">GPIO 4 Interlock Digital Input</p>
+                  <p className="text-xs text-[#77756e]">GPIO 4 Interlock Digital Input</p>
                 </div>
               </div>
 
               <button
                 onClick={() => setCupDetected(!cupDetected)}
-                className="btn btn-secondary text-xs"
+                className="btn-modern-yellow text-xs"
               >
                 Toggle State
               </button>
@@ -172,50 +173,39 @@ export const ManualDiagnostics = () => {
           </div>
 
           {/* Authentic 16x2 LCD Display Simulator */}
-          <div className="glass-panel p-6 space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Monitor className="text-cyan-400" size={18} /> 16x2 I2C LCD Character Screen
+          <div className="modern-card p-6 bg-white space-y-4">
+            <h3 className="text-base font-bold text-[#111] flex items-center gap-2 border-b border-black/10 pb-3">
+              <Monitor className="text-[#f5c400]" size={18} /> 16x2 I2C LCD Character Screen
             </h3>
 
-            {/* Glowing LCD Display Box */}
-            <div className="lcd-screen rounded-2xl p-5 font-mono space-y-2 border-4 border-slate-900 shadow-2xl">
-              <div className="bg-black/20 p-2.5 rounded tracking-widest text-center text-base font-bold select-none">
-                {lcdLine1.padEnd(16, ' ').substring(0, 16)}
-              </div>
-              <div className="bg-black/20 p-2.5 rounded tracking-widest text-center text-base font-bold select-none">
-                {lcdLine2.padEnd(16, ' ').substring(0, 16)}
-              </div>
+            <div className="lcd-screen p-4 rounded-2xl space-y-1 font-mono text-center shadow-inner">
+              <div className="text-base font-bold">{lcdLine1.padEnd(16, ' ')}</div>
+              <div className="text-base font-bold">{lcdLine2.padEnd(16, ' ')}</div>
             </div>
 
-            {/* Input fields to test LCD updates */}
-            <div className="space-y-3 pt-2">
+            <div className="grid grid-cols-2 gap-3 pt-2">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                  Row 1 Text (Max 16 Chars)
-                </label>
+                <label className="block text-[10px] font-bold text-[#77756e] uppercase mb-1">Line 1 Text</label>
                 <input
                   type="text"
                   maxLength={16}
                   value={lcdLine1}
                   onChange={(e) => setLcdLine1(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-sm outline-none focus:border-cyan-500"
+                  className="w-full bg-[#f4f1e8] border border-black/10 rounded-xl px-3 py-1.5 text-xs text-[#111] font-mono font-bold"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                  Row 2 Text (Max 16 Chars)
-                </label>
+                <label className="block text-[10px] font-bold text-[#77756e] uppercase mb-1">Line 2 Text</label>
                 <input
                   type="text"
                   maxLength={16}
                   value={lcdLine2}
                   onChange={(e) => setLcdLine2(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-sm outline-none focus:border-cyan-500"
+                  className="w-full bg-[#f4f1e8] border border-black/10 rounded-xl px-3 py-1.5 text-xs text-[#111] font-mono font-bold"
                 />
               </div>
             </div>
-
           </div>
 
         </div>
