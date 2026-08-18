@@ -5,6 +5,8 @@ import {
   Plus,
   Check,
   GlassWater,
+  Scale,
+  ArrowRight
 } from "lucide-react";
 
 import { useBartender } from "../context/BartenderContext";
@@ -19,6 +21,7 @@ export const CustomizationPanel = () => {
     setCupSize,
     selectedExtras,
     toggleExtra,
+    setActiveScreen
   } = useBartender();
 
   const extraOptions = [
@@ -41,9 +44,17 @@ export const CustomizationPanel = () => {
 
         <div className="mb-5 border-b border-black/10 pb-4">
 
-        <span className="badge-yellow">
-          02 / CONFIGURE
-        </span>
+          <div className="flex items-center justify-between">
+            <span className="badge-yellow">
+              02 / CONFIGURE
+            </span>
+            <button
+              onClick={() => setActiveScreen('weight_customizer')}
+              className="btn-modern-yellow text-[10px] py-1 px-3 font-black flex items-center gap-1.5"
+            >
+              <Scale size={12} /> Customize Weights (g) <ArrowRight size={10} />
+            </button>
+          </div>
 
           <h3 className="mt-3 heading-md">
             CUSTOMIZE
@@ -53,8 +64,7 @@ export const CustomizationPanel = () => {
           </h3>
 
           <p className="mt-2 text-[10px] text-slate-500">
-            Configure preparation parameters before
-            sending the recipe to the robot.
+            Configure ice, sweetness, cup size, or customize exact tank liquid weights in grams.
           </p>
 
         </div>

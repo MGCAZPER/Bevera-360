@@ -24,17 +24,23 @@ uint32_t stateStartTime = 0;
 uint32_t pumpDurationMs = 0;
 uint32_t lastCupCheckTime = 0;
 
+// Load Cell Pour Tracking
+float pumpStartWeightGrams = 0.0f;
+float currentPumpTargetGrams = 0.0f;
+float totalTargetGrams = 0.0f;
+
 void setup() {
     Serial.begin(115200);
     Serial.println("\n=== Starting Bevera-360 Smart Bartender System ===");
 
-    // Initialize Hardware (GPIOs, LCD, EEPROM Calibration)
+    // Initialize Hardware (GPIOs, LCD, Load Cell, EEPROM Calibration)
     hardware.init();
+    hardware.stopAll(); // Ensure all pumps and relays default to OFF state
 
     // Initialize Web Server
     webServer.init();
 
-    Serial.println("System Ready!");
+    Serial.println("System Ready! All relays OFF by default.");
 }
 
 void loop() {
@@ -47,12 +53,11 @@ void loop() {
         lastCupCheckTime = now;
         bool cupPresent = hardware.isCupPresent();
 
-        // Safety Cut-off: If cup is removed mid-pour or mid-mix
-        if (!cupPresent && (currentState == STATE_POURING || currentState == STATE_MIXING)) {
+        // Safety Cut-off: If cup is removed while transfer pump (Relay 7) is pouring to cup
+        if (!cupPresent && currentState == STATE_POURING_TO_CUP) {
             hardware.stopAll();
             currentState = STATE_PAUSED_NO_CUP;
-            hardware.showLCDNoCupError();
-            Serial.println("[SAFETY] Cup removed! Operation paused.");
+            Serial.println("[SAFETY] Cup removed during transfer pour! Operation paused.");
         }
     }
 
@@ -62,59 +67,16 @@ void loop() {
             // Waiting for Web API order
             break;
 
-        case STATE_WAITING_FOR_CUP:
-            if (hardware.isCupPresent()) {
-                Serial.println("Cup detected! Starting pour sequence...");
-                currentPumpIndex = 0;
-                
-                // Find first active pump
-                while (currentPumpIndex < NUM_PUMPS && targetVolumesMl[currentPumpIndex] <= 0) {
-                    currentPumpIndex++;
-                }
-
-                if (currentPumpIndex < NUM_PUMPS) {
-                    pumpDurationMs = hardware.calculatePourDurationMs(currentPumpIndex, targetVolumesMl[currentPumpIndex]);
-                    stateStartTime = millis();
-                    hardware.setPumpState(currentPumpIndex, true);
-                    hardware.showLCDPreparing(currentDrinkName, 10);
-                    currentState = STATE_POURING;
-                    Serial.print("Pouring Pump ");
-                    Serial.print(currentPumpIndex + 1);
-                    Serial.print(" (");
-                    Serial.print(targetVolumesMl[currentPumpIndex]);
-                    Serial.print(" ml) for ");
-                    Serial.print(pumpDurationMs);
-                    Serial.println(" ms");
-                } else {
-                    // No pump volume specified, go directly to mixing or complete
-                    if (stirrerDurationMs > 0) {
-                        stateStartTime = millis();
-                        hardware.setStirrerState(true);
-                        hardware.showLCDMixing();
-                        currentState = STATE_MIXING;
-                    } else {
-                        currentState = STATE_COMPLETED;
-                    }
-                }
-            } else {
-                // Flash prompt on LCD every second
-                if ((millis() / 500) % 2 == 0) {
-                    hardware.showLCDNoCupError();
-                } else {
-                    hardware.showLCDMessage("BEVERA-360", "WAITING FOR CUP");
-                }
-            }
-            break;
-
-        case STATE_POURING:
+        case STATE_DOSING_MIXER:
+            // Stage 1: Dosing ingredients from Tanks 1-5 into Mixer Chamber via Relays 1-5
             if (millis() - stateStartTime >= pumpDurationMs) {
-                // Stop current pump
+                // Stop current tank pump
                 hardware.setPumpState(currentPumpIndex, false);
-                Serial.print("Pump ");
+                Serial.print("Tank Pump ");
                 Serial.print(currentPumpIndex + 1);
-                Serial.println(" pour finished.");
+                Serial.println(" dosing into mixer completed.");
 
-                // Move to next pump with volume > 0
+                // Move to next tank pump with volume > 0
                 currentPumpIndex++;
                 while (currentPumpIndex < NUM_PUMPS && targetVolumesMl[currentPumpIndex] <= 0) {
                     currentPumpIndex++;
@@ -124,67 +86,113 @@ void loop() {
                     pumpDurationMs = hardware.calculatePourDurationMs(currentPumpIndex, targetVolumesMl[currentPumpIndex]);
                     stateStartTime = millis();
                     hardware.setPumpState(currentPumpIndex, true);
-                    
-                    int progressPct = (int)(((float)(currentPumpIndex + 1) / NUM_PUMPS) * 100);
-                    hardware.showLCDPreparing(currentDrinkName, progressPct);
-                    Serial.print("Pouring Pump ");
-                    Serial.println(currentPumpIndex + 1);
+                    Serial.print("Dosing Tank Pump ");
+                    Serial.print(currentPumpIndex + 1);
+                    Serial.print(" (");
+                    Serial.print(targetVolumesMl[currentPumpIndex]);
+                    Serial.println(" ml) into Mixer");
                 } else {
-                    // All pumps finished, check stirrer motor
+                    // All tank pumps finished, transition to Stage 2: Mixing
                     if (stirrerDurationMs > 0) {
                         stateStartTime = millis();
-                        hardware.setStirrerState(true);
-                        hardware.showLCDMixing();
+                        hardware.setStirrerState(true); // Relay 6 ON
                         currentState = STATE_MIXING;
-                        Serial.println("Starting Stirrer Motor...");
+                        Serial.println("Stage 2: Starting Mixer Motor (Relay 6)...");
                     } else {
-                        currentState = STATE_COMPLETED;
+                        // Skip mixing, go directly to Stage 3: Waiting for Cup
+                        currentState = STATE_WAITING_FOR_CUP;
+                        Serial.println("Stage 3: Waiting for Cup on scale...");
                     }
                 }
             }
             break;
 
         case STATE_MIXING:
+            // Stage 2: Blending drink in Mixer Chamber via Relay 6
             if (millis() - stateStartTime >= stirrerDurationMs) {
-                hardware.setStirrerState(false);
-                Serial.println("Stirring completed!");
-                currentState = STATE_COMPLETED;
-                stateStartTime = millis();
-                hardware.showLCDDrinkReady();
+                hardware.setStirrerState(false); // Relay 6 OFF
+                Serial.println("Stage 2: Mixing completed! Waiting for Cup...");
+                currentState = STATE_WAITING_FOR_CUP;
             }
             break;
 
+        case STATE_WAITING_FOR_CUP:
+            // Stage 3: Waiting for Cup under Relay 7 Transfer Pump
+            if (now - lastCupCheckTime >= 2000) {
+                Serial.println("[STATE_WAITING_FOR_CUP] Waiting for cup detection on scale/IR to trigger Relay 7 Transfer Pump...");
+            }
+            if (hardware.isCupPresent()) {
+                Serial.println("Cup detected on scale! Taring cup weight and starting Relay 7 transfer pump...");
+                
+                // Tare scale with cup on platform
+                hardware.tareCup();
+                
+                totalTargetGrams = 0.0f;
+                for (int i = 0; i < NUM_PUMPS; i++) {
+                    totalTargetGrams += targetVolumesMl[i];
+                }
+
+                // Safety timeout for Relay 7: estimated flow rate duration + 6s buffer
+                pumpDurationMs = (uint32_t)((totalTargetGrams / DEFAULT_TRANSFER_FLOW_RATE_ML_PER_SEC) * 1000.0f) + 6000;
+                stateStartTime = millis();
+
+                // Turn ON Relay 7 (Mixer-to-Cup Transfer Pump)
+                hardware.setTransferPumpState(true);
+                currentState = STATE_POURING_TO_CUP;
+
+                Serial.print("Relay 7 active. Transferring ");
+                Serial.print(totalTargetGrams);
+                Serial.println(" g mixed drink to Cup...");
+            }
+            break;
+
+        case STATE_POURING_TO_CUP: {
+            // Stage 3: Relay 7 Transfer Pump active with real-time Load Cell weight feedback
+            float netWeight = hardware.getNetWeightGrams();
+
+            bool weightReached = (netWeight >= totalTargetGrams);
+            bool timeoutReached = (millis() - stateStartTime >= pumpDurationMs);
+
+            if (weightReached || timeoutReached) {
+                // Stop Relay 7 Transfer Pump
+                hardware.setTransferPumpState(false);
+                Serial.print("Relay 7 Transfer Pump stopped. ");
+                if (weightReached) {
+                    Serial.print("Target weight reached (");
+                } else {
+                    Serial.print("Transfer timeout reached (");
+                }
+                Serial.print(netWeight);
+                Serial.println(" g in cup).");
+
+                currentState = STATE_COMPLETED;
+                stateStartTime = millis();
+            }
+            break;
+        }
+
         case STATE_PAUSED_NO_CUP:
             if (hardware.isCupPresent()) {
-                Serial.println("Cup replaced! Resuming operation...");
-                if (currentPumpIndex < NUM_PUMPS) {
-                    stateStartTime = millis(); // Reset timer for remaining duration
-                    hardware.setPumpState(currentPumpIndex, true);
-                    currentState = STATE_POURING;
-                    hardware.showLCDPreparing(currentDrinkName, 50);
-                } else {
-                    currentState = STATE_MIXING;
-                    hardware.setStirrerState(true);
-                    hardware.showLCDMixing();
-                }
+                Serial.println("Cup replaced! Resuming Relay 7 transfer pour...");
+                stateStartTime = millis(); // Reset safety timeout
+                hardware.setTransferPumpState(true);
+                currentState = STATE_POURING_TO_CUP;
             }
             break;
 
         case STATE_COMPLETED:
             hardware.stopAll();
-            hardware.showLCDDrinkReady();
             // Stay in completed state for 5 seconds or until cup is picked up
             if (millis() - stateStartTime >= 5000 || !hardware.isCupPresent()) {
                 currentState = STATE_IDLE;
                 currentDrinkName = "";
-                hardware.showLCDReady();
-                Serial.println("Reset to IDLE.");
+                Serial.println("Order complete. Reset to IDLE.");
             }
             break;
 
         case STATE_ERROR:
             hardware.stopAll();
-            hardware.showLCDMessage("SYSTEM ERROR!", "RESET MACHINE");
+            Serial.println("System error state!");
             break;
     }
 

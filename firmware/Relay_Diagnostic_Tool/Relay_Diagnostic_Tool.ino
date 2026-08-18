@@ -34,16 +34,13 @@ struct RelayPinInfo {
 
 // We test both default pins and alternate clean ESP32 pins
 RelayPinInfo PINS_TO_TEST[] = {
-    {23, "Relay 1 (Default / GPIO 23)"},
-    {25, "Relay 2 (Default / GPIO 25)"},
-    {19, "Relay 3 (Default / GPIO 19)"},
-    {18, "Relay 4 (Default / GPIO 18)"},
-    {5,  "Relay 5 (Default / GPIO 5)"},
-    {17, "Relay 6 Stirrer (Default / GPIO 17)"},
-    {26, "Alt Pin A (GPIO 26 - Super Safe)"},
-    {27, "Alt Pin B (GPIO 27 - Super Safe)"},
-    {32, "Alt Pin C (GPIO 32 - Super Safe)"},
-    {33, "Alt Pin D (GPIO 33 - Super Safe)"}
+    {23, "Relay 1 (GPIO 23)"},
+    {25, "Relay 2 (GPIO 25)"},
+    {19, "Relay 3 (GPIO 19)"},
+    {18, "Relay 4 (GPIO 18)"},
+    {16, "Relay 5 (GPIO 16)"},
+    {32, "Relay 6 Mixer (GPIO 32)"},
+    {33, "Relay 7 Transfer (GPIO 33)"}
 };
 
 const uint8_t TOTAL_PINS = sizeof(PINS_TO_TEST) / sizeof(PINS_TO_TEST[0]);
@@ -97,10 +94,11 @@ void setup() {
     Serial.println(" Type '2' to toggle Relay 2 (GPIO 25)");
     Serial.println(" Type '3' to toggle Relay 3 (GPIO 19)");
     Serial.println(" Type '4' to toggle Relay 4 (GPIO 18)");
-    Serial.println(" Type '5' to toggle Relay 5 (GPIO 5)");
-    Serial.println(" Type '6' to toggle Relay 6 (GPIO 17)");
-    Serial.println(" Type 'ALL_ON' to force all pins LOW (0V)");
-    Serial.println(" Type 'ALL_OFF' to force all pins HIGH (3.3V)");
+    Serial.println(" Type '5' to toggle Relay 5 (GPIO 16)");
+    Serial.println(" Type '6' to toggle Relay 6 (GPIO 32)");
+    Serial.println(" Type '7' to toggle Relay 7 (GPIO 33)");
+    Serial.println(" Type 'ALL_ON' to force all pins LOW (0V / ON)");
+    Serial.println(" Type 'ALL_OFF' to force all pins HIGH (3.3V / OFF)");
     Serial.println("=======================================================\n");
 }
 
@@ -123,11 +121,14 @@ void loop() {
             digitalWrite(18, !digitalRead(18));
             Serial.print("Relay 4 (GPIO 18) Toggled to: "); Serial.println(digitalRead(18) == LOW ? "LOW (0V / ON)" : "HIGH (3.3V / OFF)");
         } else if (cmd == "5") {
-            digitalWrite(5, !digitalRead(5));
-            Serial.print("Relay 5 (GPIO 5) Toggled to: "); Serial.println(digitalRead(5) == LOW ? "LOW (0V / ON)" : "HIGH (3.3V / OFF)");
+            digitalWrite(16, !digitalRead(16));
+            Serial.print("Relay 5 (GPIO 16) Toggled to: "); Serial.println(digitalRead(16) == LOW ? "LOW (0V / ON)" : "HIGH (3.3V / OFF)");
         } else if (cmd == "6") {
-            digitalWrite(17, !digitalRead(17));
-            Serial.print("Relay 6 (GPIO 17) Toggled to: "); Serial.println(digitalRead(17) == LOW ? "LOW (0V / ON)" : "HIGH (3.3V / OFF)");
+            digitalWrite(32, !digitalRead(32));
+            Serial.print("Relay 6 (GPIO 32) Toggled to: "); Serial.println(digitalRead(32) == LOW ? "LOW (0V / ON)" : "HIGH (3.3V / OFF)");
+        } else if (cmd == "7") {
+            digitalWrite(33, !digitalRead(33));
+            Serial.print("Relay 7 (GPIO 33) Toggled to: "); Serial.println(digitalRead(33) == LOW ? "LOW (0V / ON)" : "HIGH (3.3V / OFF)");
         } else if (cmd == "ALL_ON") {
             for (uint8_t i = 0; i < TOTAL_PINS; i++) {
                 pinMode(PINS_TO_TEST[i].pin, OUTPUT);

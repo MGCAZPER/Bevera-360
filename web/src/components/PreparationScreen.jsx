@@ -14,18 +14,20 @@ export const PreparationScreen = () => {
     pumpsState,
     stirrerMotor,
     dispensingStatus,
-    emergencyStop
+    emergencyStop,
+    netWeightGrams,
+    grossWeightGrams
   } = useBartender();
 
   const isPaused = !cupDetected || machineState === 'WAITING_FOR_CUP' || machineState === 'PAUSED_NO_CUP';
 
   const steps = [
-    { label: 'Order Received',        desc: 'Recipe queued by ESP32 board',         stepIdx: 0 },
-    { label: 'Cup Detected',          desc: cupDetected ? 'IR sensor verified ✓' : 'Waiting for cup insertion...', stepIdx: 1 },
-    { label: 'Measuring Ingredients', desc: 'Precision 5-relay pumps active',        stepIdx: 2 },
-    { label: 'Mixing',                desc: '12V DC magnetic stirrer spinning',       stepIdx: 3 },
-    { label: 'Dispensing',            desc: 'Final beverage pour in glass',           stepIdx: 4 },
-    { label: 'Drink Ready',           desc: 'Order complete & ready to serve',        stepIdx: 5 },
+    { label: 'Order Received',        desc: 'Recipe queued by ESP32 board',                stepIdx: 0 },
+    { label: 'Dosing into Mixer',     desc: 'Relays 1-5 dispensing tanks -> mixer',        stepIdx: 1 },
+    { label: 'Blending Beverage',     desc: 'Relay 6 Mixer Motor spinning',                stepIdx: 2 },
+    { label: 'Cup Placement Check',   desc: cupDetected ? 'Cup on platform scale ✓' : 'Place cup under Relay 7 nozzle', stepIdx: 3 },
+    { label: 'Pumping to Cup',        desc: 'Relay 7 transfer pump + Load Cell monitoring', stepIdx: 4 },
+    { label: 'Drink Ready',           desc: 'Order complete & ready to enjoy',             stepIdx: 5 },
   ];
 
   return (
@@ -136,9 +138,9 @@ export const PreparationScreen = () => {
                 </span>
               </div>
               <div className="bg-white p-2 rounded-xl border border-black/8 flex justify-between items-center">
-                <span className="text-[#77756e] font-bold">STATUS:</span>
-                <span className={`font-black ${dispensingStatus === 'DISPENSING' ? 'text-[#159447]' : 'text-[#77756e]'}`}>
-                  {dispensingStatus}
+                <span className="text-[#77756e] font-bold">POURED WT:</span>
+                <span className="font-black text-[#dca43a]">
+                  {netWeightGrams.toFixed(0)}g
                 </span>
               </div>
             </div>

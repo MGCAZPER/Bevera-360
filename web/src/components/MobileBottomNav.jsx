@@ -1,16 +1,16 @@
 import React from 'react';
 import { useBartender } from '../context/BartenderContext';
-import { Home, GlassWater, ShoppingBag, Activity, User } from 'lucide-react';
+import { Home, GlassWater, Layers, Activity, LayoutDashboard } from 'lucide-react';
 
 export const MobileBottomNav = () => {
   const { mobileTab, setMobileTab, setActiveScreen } = useBartender();
 
   const navItems = [
-    { id: 'home',    label: 'Home',   icon: Home,       action: () => { setMobileTab('home');    setActiveScreen('main');  } },
-    { id: 'drinks',  label: 'Drinks', icon: GlassWater, action: () => { setMobileTab('drinks');  setActiveScreen('main');  } },
-    { id: 'orders',  label: 'Orders', icon: ShoppingBag,action: () => { setMobileTab('orders');  setActiveScreen('main');  } },
-    { id: 'status',  label: 'Status', icon: Activity,   action: () => { setMobileTab('status');  setActiveScreen('admin'); } },
-    { id: 'profile', label: 'Profile',icon: User,       action: () => { setMobileTab('profile'); setActiveScreen('main');  } },
+    { id: 'home',    label: 'Home',   icon: Home,            action: () => { setMobileTab('home');    setActiveScreen('main');  } },
+    { id: 'drinks',  label: 'Menu',   icon: GlassWater,      action: () => { setMobileTab('drinks');  setActiveScreen('customer_menu'); } },
+    { id: 'queue',   label: 'Queue',  icon: Layers,          action: () => { setMobileTab('queue');   setActiveScreen('queue'); } },
+    { id: 'robo',    label: 'Robo Hub',icon: LayoutDashboard, action: () => { setMobileTab('robo');    setActiveScreen('robo_dashboard'); } },
+    { id: 'status',  label: 'Admin',  icon: Activity,        action: () => { setMobileTab('status');  setActiveScreen('admin'); } },
   ];
 
   return (
@@ -38,3 +38,4 @@ export const MobileBottomNav = () => {
     </nav>
   );
 };
+

@@ -1,12 +1,23 @@
 /*
  * ===============================================================================
- * BEVERA-360 / ESP32 RELAY HARDWARE TEST SKETCH
+ * BEVERA-360: ESP32 7-RELAY HARDWARE RANDOM FIRING TEST SKETCH
  * ===============================================================================
  * 
  * Purpose:
- * This standalone test script continuously and randomly toggles all relay channels
- * (Pumps 1-5 and Stirrer Motor Relay) to physically test your 5-Channel / 8-Channel
- * Relay Module LEDs, switching solenoids, clicking sounds, and power wiring.
+ * Standalone test script to continuously and randomly fire all 7 relay channels
+ * (Pumps 1-5, Relay 6 Mixer Motor, and Relay 7 Transfer Pump) to physically test
+ * relay module optocoupler LEDs, magnetic coil click sounds, 12V DC power wiring,
+ * and JD-VCC coil power.
+ * 
+ * Exact GPIO Pin Assignments Tested:
+ * -------------------------------------------------------------------------------
+ * Relay 1 (Tank Pump 1)      -->  GPIO 23
+ * Relay 2 (Tank Pump 2)      -->  GPIO 25
+ * Relay 3 (Tank Pump 3)      -->  GPIO 19
+ * Relay 4 (Tank Pump 4)      -->  GPIO 18
+ * Relay 5 (Tank Pump 5)      -->  GPIO 5
+ * Relay 6 (Mixer Motor)      -->  GPIO 21
+ * Relay 7 (Transfer Pump)    -->  GPIO 22
  * 
  * Target Board: ESP32 Dev Module
  * Serial Monitor Speed: 115200 Baud
@@ -17,51 +28,46 @@
 
 // Set your Relay module logic type:
 // Most standard Relay boards are ACTIVE LOW (true = turns ON with 0V / LOW)
-// If your relays click when pin is HIGH, set RELAY_ACTIVE_LOW to false.
-const bool RELAY_ACTIVE_LOW = true;
+// If your relays turn ON when pin is HIGH, set RELAY_ACTIVE_LOW to false.
+bool RELAY_ACTIVE_LOW = true;
 
-// Define relay output pins matching Bevera-360 Hardware mapping
-const uint8_t RELAY_PINS[] = {
-    23, // Relay 1 -> Pump 1 (Tank 1)
-    25, // Relay 2 -> Pump 2 (Tank 2)
-    19, // Relay 3 -> Pump 3 (Tank 3)
-    18, // Relay 4 -> Pump 4 (Tank 4)
-    5,  // Relay 5 -> Pump 5 (Tank 5)
-    17, // Relay 6 -> Stirrer Motor (Primary GPIO 17)
-    14  // Relay 6 Alt -> Stirrer Motor (Alternate GPIO 14)
+// Exact Bevera-360 7-Channel Relay Pin Mapping
+struct RelayConfig {
+    uint8_t pin;
+    const char* name;
+    bool currentState;
 };
 
-const char* RELAY_NAMES[] = {
-    "Relay 1 (Pump 1 / GPIO 23)",
-    "Relay 2 (Pump 2 / GPIO 25)",
-    "Relay 3 (Pump 3 / GPIO 19)",
-    "Relay 4 (Pump 4 / GPIO 18)",
-    "Relay 5 (Pump 5 / GPIO 5)",
-    "Relay 6 (Stirrer / GPIO 17)",
-    "Relay 6 Alt (Stirrer / GPIO 14)"
+RelayConfig RELAYS[] = {
+    {23, "Relay 1: Tank Pump 1     (GPIO 23)", false},
+    {25, "Relay 2: Tank Pump 2     (GPIO 25)", false},
+    {19, "Relay 3: Tank Pump 3     (GPIO 19)", false},
+    {18, "Relay 4: Tank Pump 4     (GPIO 18)", false},
+    {16, "Relay 5: Tank Pump 5     (GPIO 16)", false},
+    {32, "Relay 6: Mixer Motor     (GPIO 32)", false},
+    {33, "Relay 7: Transfer Pump   (GPIO 33)", false}
 };
 
-const uint8_t TOTAL_RELAYS = sizeof(RELAY_PINS) / sizeof(RELAY_PINS[0]);
+const uint8_t TOTAL_RELAYS = sizeof(RELAYS) / sizeof(RELAYS[0]);
 
-// Helper helper functions to turn relay ON / OFF
-void setRelayState(uint8_t index, bool stateOn) {
-    uint8_t pin = RELAY_PINS[index];
-    uint8_t pinLevel;
+// Helper function to set relay hardware state
+void setRelayState(uint8_t index, bool turnOn) {
+    if (index >= TOTAL_RELAYS) return;
 
-    if (RELAY_ACTIVE_LOW) {
-        pinLevel = stateOn ? LOW : HIGH;
-    } else {
-        pinLevel = stateOn ? HIGH : LOW;
-    }
-
-    digitalWrite(pin, pinLevel);
+    RELAYS[index].currentState = turnOn;
+    uint8_t pinLevel = RELAY_ACTIVE_LOW ? (turnOn ? LOW : HIGH) : (turnOn ? HIGH : LOW);
+    digitalWrite(RELAYS[index].pin, pinLevel);
 
     Serial.print("  [RELAY ");
     Serial.print(index + 1);
-    Serial.print("] Pin ");
-    Serial.print(pin);
-    Serial.print(" -> ");
-    Serial.println(stateOn ? "⚡ ON  (CLOSED)" : "💤 OFF (OPEN)");
+    Serial.print(" / GPIO ");
+    Serial.print(RELAYS[index].pin);
+    Serial.print("] -> ");
+    if (turnOn) {
+        Serial.println("⚡ ON  (CLOSED / CLICKED)");
+    } else {
+        Serial.println("💤 OFF (OPEN)");
+    }
 }
 
 void turnAllOff() {
@@ -72,71 +78,100 @@ void turnAllOff() {
 
 void setup() {
     Serial.begin(115200);
-    delay(1000);
+    delay(1500);
 
-    Serial.println("\n==================================================");
-    Serial.println("  🍹 BEVERA-360: ESP32 RELAY TEST BENCH SKETCH  ");
-    Serial.println("==================================================");
+    Serial.println("\n=======================================================");
+    Serial.println("  🍹 BEVERA-360: ESP32 7-RELAY RANDOM FIRING TESTER  ");
+    Serial.println("=======================================================");
     Serial.print("Active Low Logic: ");
     Serial.println(RELAY_ACTIVE_LOW ? "TRUE (0V = ON)" : "FALSE (3.3V = ON)");
     Serial.print("Total Relays Configured: ");
     Serial.println(TOTAL_RELAYS);
-    Serial.println("--------------------------------------------------\n");
+    Serial.println("-------------------------------------------------------\n");
 
-    // Initialize all GPIO pins as OUTPUT and set them to OFF state
+    // Initialize all 7 GPIO pins as OUTPUT and force OFF (Pre-latch HIGH to avoid startup pulse)
     for (uint8_t i = 0; i < TOTAL_RELAYS; i++) {
-        pinMode(RELAY_PINS[i], OUTPUT);
+        uint8_t inactiveLevel = RELAY_ACTIVE_LOW ? HIGH : LOW;
+        digitalWrite(RELAYS[i].pin, inactiveLevel);
+        pinMode(RELAYS[i].pin, OUTPUT);
+        digitalWrite(RELAYS[i].pin, inactiveLevel);
     }
     turnAllOff();
     delay(1000);
 
     // ==========================================
-    // STAGE 1: SEQUENTIAL RELAY TEST (1 BY 1)
+    // STAGE 1: SEQUENTIAL SWEEP (1 BY 1)
     // ==========================================
-    Serial.println("\n--- STAGE 1: Testing Each Relay Sequentially ---");
+    Serial.println("--- STAGE 1: Sequential 1-by-1 Relay Click Sweep ---");
     for (uint8_t i = 0; i < TOTAL_RELAYS; i++) {
         Serial.print("Testing ");
-        Serial.println(RELAY_NAMES[i]);
+        Serial.println(RELAYS[i].name);
         
-        setRelayState(i, true);  // Turn ON
-        delay(1200);             // Hold ON for 1.2s
+        setRelayState(i, true);   // Turn ON (Click)
+        delay(1200);              // Hold for 1.2 sec
         
-        setRelayState(i, false); // Turn OFF
-        delay(400);
+        setRelayState(i, false);  // Turn OFF
+        delay(300);
     }
 
     // ==========================================
-    // STAGE 2: ALL RELAYS BURST TEST
+    // STAGE 2: ALL RELAYS SIMULTANEOUS BURST
     // ==========================================
-    Serial.println("\n--- STAGE 2: All Relays Burst (ON 2s -> OFF 2s) ---");
-    Serial.println("Turning ALL Relays ON simultaneously...");
+    Serial.println("\n--- STAGE 2: All 7 Relays Burst Test (ON 2s -> OFF 2s) ---");
+    Serial.println("Turning ALL 7 Relays ON simultaneously...");
     for (uint8_t i = 0; i < TOTAL_RELAYS; i++) setRelayState(i, true);
     delay(2000);
 
-    Serial.println("Turning ALL Relays OFF...");
+    Serial.println("Turning ALL 7 Relays OFF...");
     turnAllOff();
     delay(2000);
 
-    Serial.println("\n==================================================");
-    Serial.println("  STARTING INFINITE RANDOM RELAY TOGGLE LOOP  ");
-    Serial.println("==================================================");
+    Serial.println("\n=======================================================");
+    Serial.println("  STARTING INFINITE RANDOM RELAY FIRING LOOP  ");
+    Serial.println("  (Type 1-7 to toggle manually, ALL_ON, ALL_OFF) ");
+    Serial.println("=======================================================\n");
+
     randomSeed(analogRead(34) + millis());
 }
 
 void loop() {
-    // Pick a random relay channel (0 to TOTAL_RELAYS - 1)
+    // 1. Process Serial CLI inputs if user sends command
+    if (Serial.available() > 0) {
+        String cmd = Serial.readStringUntil('\n');
+        cmd.trim();
+        cmd.toUpperCase();
+
+        if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '7') {
+            uint8_t idx = cmd[0] - '1';
+            bool newState = !RELAYS[idx].currentState;
+            Serial.print("[MANUAL CLI] ");
+            setRelayState(idx, newState);
+        } else if (cmd == "ALL_ON") {
+            Serial.println("[MANUAL CLI] Forcing ALL 7 Relays ON...");
+            for (uint8_t i = 0; i < TOTAL_RELAYS; i++) setRelayState(i, true);
+        } else if (cmd == "ALL_OFF") {
+            Serial.println("[MANUAL CLI] Forcing ALL 7 Relays OFF...");
+            turnAllOff();
+        } else if (cmd == "TOGGLE_LOGIC") {
+            RELAY_ACTIVE_LOW = !RELAY_ACTIVE_LOW;
+            Serial.print("[MANUAL CLI] Toggled RELAY_ACTIVE_LOW to: ");
+            Serial.println(RELAY_ACTIVE_LOW ? "TRUE (0V = ON)" : "FALSE (3.3V = ON)");
+            turnAllOff();
+        }
+    }
+
+    // 2. Pick a random relay channel (0 to TOTAL_RELAYS - 1)
     uint8_t randomIndex = random(0, TOTAL_RELAYS);
 
-    // Pick a random ON/OFF state (true = ON, false = OFF)
+    // 3. Pick a random target state (true = ON, false = OFF)
     bool randomState = (random(0, 2) == 1);
 
-    // Apply state
-    Serial.print("[RANDOM TEST] ");
-    Serial.print(RELAY_NAMES[randomIndex]);
-    Serial.print(" => ");
+    // 4. Apply state to selected relay
+    Serial.print("[RANDOM FIRE] ");
     setRelayState(randomIndex, randomState);
 
-    // Random delay between 400ms and 1800ms
-    uint32_t randomDelay = random(400, 1800);
+    // 5. Random delay between 300ms and 1500ms
+    uint32_t randomDelay = random(300, 1500);
     delay(randomDelay);
 }
+

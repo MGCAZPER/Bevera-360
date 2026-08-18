@@ -3,7 +3,7 @@ import { useBartender } from '../context/BartenderContext';
 import { Cpu, Power, Monitor, ShieldCheck, ShieldAlert, RotateCw, Droplet, CheckCircle2 } from 'lucide-react';
 
 export const ManualDiagnostics = () => {
-  const { tanks, triggerManualTest, cupDetected, setCupDetected, emergencyStop } = useBartender();
+  const { tanks, triggerManualTest, cupDetected, setCupDetected, emergencyStop, grossWeightGrams, netWeightGrams, scaleFactor, tareScale } = useBartender();
   
   const [relayStates, setRelayStates] = useState({
     pump_1: false,
@@ -11,7 +11,8 @@ export const ManualDiagnostics = () => {
     pump_3: false,
     pump_4: false,
     pump_5: false,
-    stirrer: false
+    stirrer: false,
+    transfer_pump: false
   });
 
   const [lcdLine1, setLcdLine1] = useState('BEVERA-360 BOT');
@@ -30,7 +31,8 @@ export const ManualDiagnostics = () => {
       pump_3: false,
       pump_4: false,
       pump_5: false,
-      stirrer: false
+      stirrer: false,
+      transfer_pump: false
     });
     emergencyStop();
   };
@@ -45,7 +47,7 @@ export const ManualDiagnostics = () => {
           <h2 className="text-2xl font-black text-[#111] tracking-tight flex items-center gap-2 mt-1">
             <Cpu className="text-[#f5c400]" size={22} /> Hardware Diagnostic Test Bench
           </h2>
-          <p className="text-[#77756e] text-xs">Direct manual pin control for Relays, Stirrer Motor, IR Sensor, and LCD Module</p>
+          <p className="text-[#77756e] text-xs">Direct manual pin control for 7 Relays, Stirrer Motor, Transfer Pump, IR Sensor, and LCD Module</p>
         </div>
 
         <button
@@ -60,11 +62,11 @@ export const ManualDiagnostics = () => {
       {/* Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* 5-Channel Relay Module Direct Controls */}
+        {/* 7-Channel Relay Module Direct Controls */}
         <div className="modern-card p-6 bg-white space-y-4">
           <div className="flex items-center justify-between border-b border-black/10 pb-3">
             <h3 className="text-base font-bold text-[#111] flex items-center gap-2">
-              <Power className="text-[#f5c400]" size={18} /> 5-Channel Relay Switches
+              <Power className="text-[#f5c400]" size={18} /> 7-Relay Hardware Module
             </h3>
             <span className="badge-black">Active LOW</span>
           </div>
@@ -90,8 +92,8 @@ export const ManualDiagnostics = () => {
                       <Droplet size={18} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-[#111] text-sm">Relay {idx + 1}: Pump {idx + 1}</h4>
-                      <p className="text-xs text-[#77756e]">{tank.name}</p>
+                      <h4 className="font-bold text-[#111] text-sm">Relay {idx + 1}: Tank Pump {idx + 1}</h4>
+                      <p className="text-xs text-[#77756e]">{tank.name} -&gt; Mixer Chamber</p>
                     </div>
                   </div>
 
@@ -107,7 +109,7 @@ export const ManualDiagnostics = () => {
               );
             })}
 
-            {/* Stirrer Relay */}
+            {/* Stirrer Relay 6 */}
             <div
               className={`p-3.5 rounded-2xl border flex items-center justify-between transition-all ${
                 relayStates.stirrer ? 'bg-[#8b5cf6]/20 border-[#8b5cf6] shadow-sm' : 'bg-[#f4f1e8] border-black/10'
@@ -122,8 +124,8 @@ export const ManualDiagnostics = () => {
                   <RotateCw size={18} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#111] text-sm">Relay 6: Stirrer Motor</h4>
-                  <p className="text-xs text-[#77756e]">12V DC Magnetic Stirrer</p>
+                  <h4 className="font-bold text-[#111] text-sm">Relay 6: Mixer Motor (GPIO 32)</h4>
+                  <p className="text-xs text-[#77756e]">12V DC Mixer / Stirrer Motor</p>
                 </div>
               </div>
 
@@ -134,6 +136,36 @@ export const ManualDiagnostics = () => {
                 }`}
               >
                 {relayStates.stirrer ? 'ON (ACTIVE)' : 'OFF'}
+              </button>
+            </div>
+
+            {/* Transfer Pump Relay 7 */}
+            <div
+              className={`p-3.5 rounded-2xl border flex items-center justify-between transition-all ${
+                relayStates.transfer_pump ? 'bg-[#dca43a]/20 border-[#dca43a] shadow-sm' : 'bg-[#f4f1e8] border-black/10'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`p-2 rounded-xl ${
+                    relayStates.transfer_pump ? 'bg-black text-[#dca43a] animate-bounce' : 'bg-white text-[#77756e] border border-black/10'
+                  }`}
+                >
+                  <Droplet size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#111] text-sm">Relay 7: Mixer-to-Cup Deliver Pump (GPIO 33)</h4>
+                  <p className="text-xs text-[#77756e]">Pumps drink from Mixer Chamber into Cup (Load Cell Verified)</p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => toggleRelay('transfer_pump')}
+                className={`btn px-4 py-1.5 text-xs ${
+                  relayStates.transfer_pump ? 'bg-black text-[#dca43a] font-black rounded-full' : 'btn-modern-black text-xs'
+                }`}
+              >
+                {relayStates.transfer_pump ? 'ON (ACTIVE)' : 'OFF'}
               </button>
             </div>
           </div>
@@ -168,6 +200,29 @@ export const ManualDiagnostics = () => {
                 className="btn-modern-yellow text-xs"
               >
                 Toggle State
+              </button>
+            </div>
+          </div>
+
+          {/* HX711 Load Cell Weight Diagnostics */}
+          <div className="modern-card p-6 bg-white space-y-4">
+            <h3 className="text-base font-bold text-[#111] flex items-center gap-2 border-b border-black/10 pb-3">
+              <ShieldCheck className="text-[#dca43a]" size={18} /> HX711 Load Cell (GPIO 26 DOUT / GPIO 27 SCK)
+            </h3>
+
+            <div className="bg-[#f4f1e8] p-4 rounded-2xl border border-black/10 flex items-center justify-between">
+              <div>
+                <h4 className="font-bold text-[#111] text-sm font-mono">
+                  {grossWeightGrams.toFixed(1)} g GROSS / {netWeightGrams.toFixed(1)} g NET
+                </h4>
+                <p className="text-xs text-[#77756e]">Scale Factor: {scaleFactor.toFixed(1)} counts/g</p>
+              </div>
+
+              <button
+                onClick={tareScale}
+                className="btn-modern-black text-xs"
+              >
+                Tare Scale
               </button>
             </div>
           </div>

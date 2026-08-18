@@ -11,8 +11,17 @@ export const SystemCalibration = () => {
     setEsp32Ip, 
     hardwareMode, 
     setHardwareMode,
-    triggerManualTest 
+    triggerManualTest,
+    grossWeightGrams,
+    netWeightGrams,
+    scaleFactor,
+    tareScale,
+    calibrateScale
   } = useBartender();
+
+  const [knownWeightInput, setKnownWeightInput] = useState('100');
+  const [scaleFactorInput, setScaleFactorInput] = useState('420');
+  const [scaleCalibSaved, setScaleCalibSaved] = useState(false);
 
   const [testActivePump, setTestActivePump] = useState(null);
   const [measuredVolumes, setMeasuredVolumes] = useState(['150', '150', '150', '150', '150']);
@@ -83,6 +92,78 @@ export const SystemCalibration = () => {
               <option value="SIMULATION_DEMO">Simulation / Demo Mode (Offline Test)</option>
               <option value="LIVE_ESP32">Live ESP32 Connected Mode (Wi-Fi REST API)</option>
             </select>
+          </div>
+        </div>
+      </div>
+
+      {/* HX711 Load Cell Scale Calibration Card */}
+      <div className="modern-card p-5 bg-white space-y-4">
+        <div className="flex items-center justify-between border-b border-black/10 pb-2">
+          <h3 className="text-sm font-bold text-[#111] flex items-center gap-2">
+            <Sliders className="text-[#dca43a]" size={16} /> HX711 Load Cell Weight Calibration
+          </h3>
+          <span className="badge-yellow font-mono">{grossWeightGrams.toFixed(1)} g GROSS</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Status & Tare */}
+          <div className="bg-[#f4f1e8] p-4 rounded-2xl border border-black/8 space-y-2">
+            <span className="text-[10px] font-bold text-[#77756e] uppercase tracking-wider block">Live Weight Status</span>
+            <div className="text-xl font-black font-mono text-[#111]">{grossWeightGrams.toFixed(1)} g</div>
+            <p className="text-[11px] text-[#77756e]">Net Poured: <strong className="text-[#dca43a]">{netWeightGrams.toFixed(1)} g</strong></p>
+            <button onClick={tareScale} className="w-full btn-modern-black py-2 text-xs flex items-center justify-center gap-1.5 mt-2">
+              <RotateCcw size={14} /> Tare Scale (Zero Out)
+            </button>
+          </div>
+
+          {/* Calibrate via Known Weight */}
+          <div className="bg-[#f4f1e8] p-4 rounded-2xl border border-black/8 space-y-2">
+            <span className="text-[10px] font-bold text-[#77756e] uppercase tracking-wider block">Calibrate via Reference Weight</span>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={knownWeightInput}
+                onChange={(e) => setKnownWeightInput(e.target.value)}
+                placeholder="100"
+                className="w-full bg-white border border-black/10 rounded-xl px-3 py-1.5 text-[#111] font-mono font-bold text-center outline-none focus:border-[#dca43a]"
+              />
+              <span className="text-xs font-bold text-[#77756e]">grams</span>
+            </div>
+            <button
+              onClick={async () => {
+                await calibrateScale(knownWeightInput, null);
+                setScaleCalibSaved(true);
+                setTimeout(() => setScaleCalibSaved(false), 3000);
+              }}
+              className="w-full btn-modern-yellow py-2 text-xs flex items-center justify-center gap-1.5"
+            >
+              {scaleCalibSaved ? <CheckCircle2 size={14} /> : <Save size={14} />}
+              <span>{scaleCalibSaved ? 'Calibrated!' : 'Calibrate with Weight'}</span>
+            </button>
+          </div>
+
+          {/* Direct Scale Factor Override */}
+          <div className="bg-[#f4f1e8] p-4 rounded-2xl border border-black/8 space-y-2">
+            <span className="text-[10px] font-bold text-[#77756e] uppercase tracking-wider block">Scale Calibration Factor</span>
+            <div className="text-xs font-mono text-[#77756e]">Current: <strong className="text-[#111]">{scaleFactor.toFixed(1)} counts/g</strong></div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={scaleFactorInput}
+                onChange={(e) => setScaleFactorInput(e.target.value)}
+                className="w-full bg-white border border-black/10 rounded-xl px-3 py-1.5 text-[#111] font-mono font-bold text-center outline-none focus:border-[#dca43a]"
+              />
+            </div>
+            <button
+              onClick={async () => {
+                await calibrateScale(null, scaleFactorInput);
+                setScaleCalibSaved(true);
+                setTimeout(() => setScaleCalibSaved(false), 3000);
+              }}
+              className="w-full btn-modern-black py-2 text-xs flex items-center justify-center gap-1.5"
+            >
+              <Save size={14} /> Save Factor to EEPROM
+            </button>
           </div>
         </div>
       </div>

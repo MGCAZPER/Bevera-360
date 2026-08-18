@@ -9,17 +9,18 @@
 
 COMPONENT             PIN NAME       ESP32 GPIO      LOGIC / TYPE     NOTES
 -------------------------------------------------------------------------------
-Relay 1 (Pump 1)      IN 1           GPIO 23         Digital OUT      Active LOW (Tank 1)
-Relay 2 (Pump 2)      IN 2           GPIO 25         Digital OUT      Active LOW (Tank 2)
-Relay 3 (Pump 3)      IN 3           GPIO 19         Digital OUT      Active LOW (Tank 3)
-Relay 4 (Pump 4)      IN 4           GPIO 18         Digital OUT      Active LOW (Tank 4)
-Relay 5 (Pump 5)      IN 5           GPIO 5          Digital OUT      Active LOW (Tank 5)
-Relay 6 (Stirrer)     IN 6           GPIO 14         Digital OUT      Active LOW (12V Motor)
+Relay 1 (Tank Pump 1) IN 1           GPIO 23         Digital OUT      Active LOW (Tank 1 to Mixer)
+Relay 2 (Tank Pump 2) IN 2           GPIO 25         Digital OUT      Active LOW (Tank 2 to Mixer)
+Relay 3 (Tank Pump 3) IN 3           GPIO 19         Digital OUT      Active LOW (Tank 3 to Mixer)
+Relay 4 (Tank Pump 4) IN 4           GPIO 18         Digital OUT      Active LOW (Tank 4 to Mixer)
+Relay 5 (Tank Pump 5) IN 5           GPIO 16         Digital OUT      Active LOW (Tank 5 to Mixer - Safe GPIO 16)
+Relay 6 (Mixer Motor) IN 6           GPIO 32         Digital OUT      Active LOW (12V Mixer Motor - GPIO 32)
+Relay 7 (Deliver Pump)IN 7           GPIO 33         Digital OUT      Active LOW (Mixer-to-Cup Pump - GPIO 33)
 
 IR Cup Sensor         OUT / DO       GPIO 4          Digital IN       Active LOW (LOW = Cup present)
 
-16x2 I2C LCD          SDA            GPIO 21         I2C Data         Address: 0x27 (or 0x3F)
-16x2 I2C LCD          SCL            GPIO 22         I2C Clock        Shared I2C Bus
+HX711 Load Cell       DOUT           GPIO 26         Digital IN       Serial Data from Load Cell (GPIO 26)
+HX711 Load Cell       SCK            GPIO 27         Digital OUT      Serial Clock to Load Cell (GPIO 27)
 
 Power Supply (Logic)  VIN / 5V       Buck 5V OUT     5V Power Input   Regulated 5V
 Power Supply (Logic)  GND            Common GND      Ground           Common Negative Ground
@@ -36,14 +37,15 @@ Power Supply (Logic)  GND            Common GND      Ground           Common Neg
    │
    ├───────► 12V DC Main Positive Bus (+)
    │            │
-   │            ├──────► Relay Module COM Terminals (COM 1 to COM 6)
+   │            ├──────► Relay Module COM Terminals (COM 1 to COM 7)
    │            │
    │            └──────► (Do NOT connect 12V directly to ESP32!)
    │
    ├───────► 12V DC Main Negative Bus (-) / GND
    │            │
-   │            ├──────► Pump 1 to 5 Negative (-) Terminals
-   │            ├──────► Stirrer Motor Negative (-) Terminal
+   │            ├──────► Tank Pumps 1 to 5 Negative (-) Terminals
+   │            ├──────► Mixer Motor Negative (-) Terminal
+   │            ├──────► Mixer-to-Cup Transfer Pump Negative (-) Terminal
    │            └──────► Buck Converter 12V GND IN
    │
    ▼
@@ -52,15 +54,15 @@ Power Supply (Logic)  GND            Common GND      Ground           Common Neg
    ├───────► Regulated 5V DC Positive Bus (+)
    │            │
    │            ├──────► ESP32 VIN / 5V Pin
-   │            ├──────► 5-Channel Relay Module VCC
-   │            ├──────► 16x2 I2C LCD VCC Pin
+   │            ├──────► 8-Channel Relay Module VCC
+   │            ├──────► HX711 Load Cell Module VCC
    │            └──────► IR Cup Sensor VCC Pin
    │
    └───────► Common Ground (GND) Bus (-)
                 │
                 ├──────► ESP32 GND Pin
                 ├──────► Relay Module GND Pin
-                ├──────► 16x2 I2C LCD GND Pin
+                ├──────► HX711 GND Pin
                 └──────► IR Cup Sensor GND Pin
 
 
@@ -70,45 +72,64 @@ Power Supply (Logic)  GND            Common GND      Ground           Common Neg
 
 RELAY CHANNEL        CONTROL PIN (ESP32)     COM TERMINAL          NO TERMINAL
 -------------------------------------------------------------------------------
-Relay 1 (Pump 1)     GPIO 23                 12V DC (+)            Pump 1 Positive (+)
-Relay 2 (Pump 2)     GPIO 25                 12V DC (+)            Pump 2 Positive (+)
-Relay 3 (Pump 3)     GPIO 19                 12V DC (+)            Pump 3 Positive (+)
-Relay 4 (Pump 4)     GPIO 18                 12V DC (+)            Pump 4 Positive (+)
-Relay 5 (Pump 5)     GPIO 5                  12V DC (+)            Pump 5 Positive (+)
-Relay 6 (Stirrer)    GPIO 4                 12V DC (+)            Motor Positive (+)
+Relay 1 (Tank 1)     GPIO 23                 12V DC (+)            Pump 1 Positive (+)
+Relay 2 (Tank 2)     GPIO 25                 12V DC (+)            Pump 2 Positive (+)
+Relay 3 (Tank 3)     GPIO 19                 12V DC (+)            Pump 3 Positive (+)
+Relay 4 (Tank 4)     GPIO 18                 12V DC (+)            Pump 4 Positive (+)
+Relay 5 (Tank 5)     GPIO 16                 12V DC (+)            Pump 5 Positive (+)
+Relay 6 (Mixer)      GPIO 32                 12V DC (+)            Mixer Motor Positive (+)
+Relay 7 (Deliver)    GPIO 33                 12V DC (+)            Deliver Pump Positive (+)
 
 * Note: Normally Open (NO) terminals connect to component positive inputs. 
   When the relay triggers (Active LOW), the switch closes and completes 12V circuit.
 
 
 -------------------------------------------------------------------------------
-4. SENSOR & DISPLAY DETAILED WIRING
+4. SENSOR DETAILED WIRING
 -------------------------------------------------------------------------------
-
-A. 16x2 I2C LCD Display (PCF8574 Backpack)
-   - GND  -->  ESP32 GND / Common GND
-   - VCC  -->  5V Output (Buck Converter)
-   - SDA  -->  ESP32 GPIO 21
-   - SCL  -->  ESP32 GPIO 22
 
 B. IR Cup Proximity Sensor
    - GND  -->  ESP32 GND / Common GND
    - VCC  -->  5V Output (Buck Converter)
    - OUT  -->  ESP32 GPIO 4 (Internal Pull-Up Enabled)
 
+C. HX711 Load Cell Amplifier Module
+   - GND  -->  ESP32 GND / Common GND
+   - VCC  -->  5V / 3.3V Output
+   - DOUT -->  ESP32 GPIO 32
+   - SCK  -->  ESP32 GPIO 33
+   - E+/E-/A+/A- --> Strain Gauge Load Cell Wires (Red: E+, Black: E-, White: A-, Green: A+)
+
 
 -------------------------------------------------------------------------------
 5. SAFETY & TROUBLESHOOTING NOTES
 -------------------------------------------------------------------------------
 
-1. Active LOW Logic: Relay channels trigger ON when GPIO pin is set to LOW (0V).
-   If your relay module is Active HIGH, change `#define RELAY_ACTIVE_LOW false`
-   in `Config.h`.
+1. RELAY COIL POWER (JD-VCC JUMPER) - NO CLICK SOUND DIAGNOSTIC:
+   - On optocoupled 5V relay modules, signal LEDs turn ON from GPIO input current,
+     giving the visual appearance that the relay is working.
+   - BUT the physical mechanical coils require 5V DC power from the `JD-VCC` pin.
+   - If your relays show power (LED on) but make NO CLICK SOUND and fail to open/close:
+     -> Ensure the `JD-VCC` jumper cap is connected to `VCC` (powering coils from 5V),
+        OR remove jumper and wire `JD-VCC` pin directly to 5V DC power!
 
-2. Ground Sharing: The 12V PSU negative terminal and the 5V Buck converter 
-   ground MUST be tied to the same Common Ground bus.
+2. ESP32 3.3V vs 5V OPTOCOUPLER LOGIC LEVEL:
+   - ESP32 GPIO outputs 3.3V HIGH. When connected to a 5V relay VCC, the 1.7V
+     voltage differential (5V - 3.3V) can keep Active-LOW optocouplers energized.
+   - If relays fail to turn OFF when GPIO is HIGH:
+     -> Wire Relay Header Signal VCC to ESP32 3.3V pin.
+     -> Wire Relay JD-VCC to 5V Power Supply (with JD-VCC jumper removed).
 
-3. Flyback Diode: Most 12V relay modules include optocouplers and flyback diodes.
-   If using custom MOSFETs or individual relays, place a 1N4007 diode across
-   pump motor terminals to eliminate inductive kickback voltages.
+3. ACTIVE LOW LOGIC:
+   - Relay channels trigger ON when GPIO pin is set to LOW (0V).
+   - If your relay module is Active HIGH, change `#define RELAY_ACTIVE_LOW false`
+     in `Config.h`.
+
+4. COMMON GROUND SHARING:
+   - The 12V PSU negative terminal, 5V Buck converter ground, and ESP32 GND
+     MUST be tied to the exact same Common Ground bus.
+
+5. FLYBACK DIODE PROTECTION:
+   - Relay modules include optocouplers and flyback diodes. If using custom MOSFETs
+     or bare relays, place 1N4007 diodes across motor terminals.
 ===============================================================================
